@@ -8,3 +8,11 @@ TEXT = 0
 NO_SPACE = 1
 DIGIT = 1
 
+# search variables
+HOTEL_NAME = '.sr-hotel__name'
+HOTEL_RATING = '.bui-review-score__badge'
+HOTEL_IMAGE = '.hotel_image'
+MEALS = '.add-red-tag__amount'
+PRICE = '.bui-price-display__value'
+SCORE_TITLE = '.bui-review-score__title'
+TOTAL_REVIEWS = '.bui-review-score__text'

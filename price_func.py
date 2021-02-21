@@ -4,7 +4,7 @@ import conf as cfg
 
 def retrieve_price(item):
     try:
-        price = item.select('.bui-price-display__value')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].split()[
+        price = item.select(cfg.PRICE)[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].split()[
             cfg.DIGIT]
         price = int(price.replace(",", ""))
     except Exception:
