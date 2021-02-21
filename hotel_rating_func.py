@@ -1,6 +1,6 @@
 
 def retrieve_hotel_rating(item):
     try:
-        return item.select('.sr-hotel__name')[0].get_text().split('\n')[1]
+        return float(item.select('.bui-review-score__badge')[0].get_text().strip())
     except Exception:
         return None

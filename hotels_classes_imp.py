@@ -12,6 +12,7 @@ import meals_func
 import room_func
 import bed_func
 import image_func
+import csv
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
@@ -66,43 +67,60 @@ class HotelsManager:
         self.hotels_dict = dict()
         dict_of_hotels = dict()
         all_urls_list = all_urls_func.all_urls(self.url, headers)
+        with open("hotels_list.csv", "w", encoding='utf-8', newline="") as booking_file:
+            fieldnames = ["name", "rating", "score", "number of reviews", "price", "location", "meals", "room type",
+                          "bed type", "hotel image"]
+            writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
+            writer.writeheader()
 
-        for link in all_urls_list:
-            link = requests.get(link, headers=headers)
-            soup = BeautifulSoup(link.content, "html.parser")
-            for item in soup.select('.sr_property_block'):
-                hotel_name = hotel_name_func.retrieve_hotel_name(item)
-                hotel_rating = hotel_rating_func.retrieve_hotel_rating(item)
-                score_title = score_title_func.retrieve_score_title(item)
-                total_reviews = total_reviews_func.retrieve_reviews_num(item)
-                price = price_func.retrieve_price(item)
-                location = location_func.retrieve_hotel_location(item)
-                meals = meals_func.retrieve_meals(item)
-                room_type = room_func.retrieve_room_type(item)
-                bed_type = bed_func.retrieve_bed_type(item)
-                hotel_image = image_func.retrieve_image_url(item)
+            for link in all_urls_list:
+                link = requests.get(link, headers=headers)
+                soup = BeautifulSoup(link.content, "html.parser")
+                for item in soup.select('.sr_property_block'):
+                    hotel_name = hotel_name_func.retrieve_hotel_name(item)
+                    hotel_rating = hotel_rating_func.retrieve_hotel_rating(item)
+                    score_title = score_title_func.retrieve_score_title(item)
+                    total_reviews = total_reviews_func.retrieve_reviews_num(item)
+                    price = price_func.retrieve_price(item)
+                    location = location_func.retrieve_hotel_location(item)
+                    meals = meals_func.retrieve_meals(item)
+                    room_type = room_func.retrieve_room_type(item)
+                    bed_type = bed_func.retrieve_bed_type(item)
+                    hotel_image = image_func.retrieve_image_url(item)
 
-                hotel_object = Hotel(hotel_name=hotel_name,
-                                     hotel_rating=hotel_rating,
-                                     score_title=score_title,
-                                     total_reviews=total_reviews,
-                                     price=price,
-                                     location=location,
-                                     meals=meals,
-                                     room_type=room_type,
-                                     bed_type=bed_type,
-                                     hotel_image=hotel_image)
-                self.hotels_dict[hotel_object.get_hotel_name()] = hotel_object
-                dict_of_hotels[hotel_object.get_hotel_name()] = {'hotel rating': hotel_rating,
-                                                                 'score title': score_title,
-                                                                 'num of reviews': total_reviews,
-                                                                 'price per week': price,
-                                                                 'location': location,
-                                                                 'meals': meals,
-                                                                 'room type': room_type,
-                                                                 'image url': hotel_image}
-        #print(dict_of_hotels)
-        #I don't remember why we wanted to do this dict_of_hotels
+                    hotel_object = Hotel(hotel_name=hotel_name,
+                                         hotel_rating=hotel_rating,
+                                         score_title=score_title,
+                                         total_reviews=total_reviews,
+                                         price=price,
+                                         location=location,
+                                         meals=meals,
+                                         room_type=room_type,
+                                         bed_type=bed_type,
+                                         hotel_image=hotel_image)
+                    self.hotels_dict[hotel_object.get_hotel_name()] = hotel_object
+
+                    writer.writerow({'name': hotel_name,
+                                     'rating': hotel_rating,
+                                     'score': score_title,
+                                     'number of reviews': total_reviews,
+                                     'price': price,
+                                     'location': location,
+                                     'meals': meals,
+                                     'room type': room_type,
+                                     'bed type': bed_type,
+                                     'hotel image': hotel_image})
+
+                    #dict_of_hotels[hotel_object.get_hotel_name()] = {'hotel rating': hotel_rating,
+                                                                  #   'score title': score_title,
+                                                                   #  'num of reviews': total_reviews,
+                                                                    # 'price per week': price,
+                                                                     #'location': location,
+                                                                    # 'meals': meals,
+                                                                    # 'room type': room_type,
+                                                                    # 'image url': hotel_image}
+            #print(dict_of_hotels)
+            #I don't remember why we wanted to do this dict_of_hotels
 
 
     def hotels_number(self):

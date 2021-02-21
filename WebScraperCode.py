@@ -12,25 +12,25 @@ for item in soup.select('.sr_property_block'):
     try:
         print(f"Hotel name: {item.select('.sr-hotel__name')[0].get_text().strip()}")
         print("Island name: ", item.select('.bui-link')[0].get_text().strip().split('\n')[0])
-        print(f"Hotel rating: {item.select('.bui-review-score__badge')[0].get_text().strip()}")
+        print(f"jhgjhgjhgjhgHotel rating: {type(item.select('.bui-review-score__badge')[0].get_text().strip())}")
         print(f"Hotel rating title: {item.select('.bui-review-score__title')[0].get_text().strip()}")
-        print(f"The Hotel has {item.select('.bui-review-score__text')[0].get_text().strip()}")
+        print(f"The Hotel has {type(item.select('.bui-review-score__text')[0].get_text().strip().split()[0])}")
         print("Click the link to see the hotel: ", item.select('.hotel_image')[0]['data-highres'])
 
         # extracting the url of the hotel:
-        hotel_link = str(item.select('.sr_item_photo_link')[0])
-        hotel_link = hotel_link.split('href=')
-        hotel_link = hotel_link[1].split('"')[1]
-        hotel_link = "https://www.booking.com" + hotel_link
-        print(hotel_link)
-        print('*****************')
-        if count == 0:  #ignore this. tried to do something that did not worked
-            hotel_link_text= requests.get(hotel_link).text
-            print(hotel_link_text)
-            soup = BeautifulSoup(hotel_link_text, 'lxml')
-            print(soup.select('.important_facility')[0].get_text())
-
-            count = 1
+        # hotel_link = str(item.select('.sr_item_photo_link')[0])
+        # hotel_link = hotel_link.split('href=')
+        # hotel_link = hotel_link[1].split('"')[1]
+        # hotel_link = "https://www.booking.com" + hotel_link
+        # print(hotel_link)
+        # print('*****************')
+        # if count == 0:  #ignore this. tried to do something that did not worked
+        #     hotel_link_text= requests.get(hotel_link).text
+        #     print(hotel_link_text)
+        #     soup = BeautifulSoup(hotel_link_text, 'lxml')
+        #     print(soup.select('.important_facility')[0].get_text())
+        #
+        #     count = 1
 
         #hotel_link = str(item.select('.sr_item_photo_link')[0])
         #print('**\n', hotel_link)
