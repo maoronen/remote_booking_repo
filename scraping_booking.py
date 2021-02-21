@@ -10,7 +10,7 @@ booking_url = 'https://www.booking.com/searchresults.en-gb.html?aid=1610684&labe
 # soup = BeautifulSoup(url.content, "html.parser")
 
 
-def get_next_url(page_url):
+def get_next_url(page_url, headers):
     url = requests.get(page_url, headers=headers)
     soup = BeautifulSoup(url.content, "html.parser")
     c = soup.find('div', class_="bui-pagination")
@@ -29,7 +29,7 @@ def all_urls(first_url):
     url_list = []
     next_url = first_url
     while True:
-        next_page_url = get_next_url(next_url)
+        next_page_url = get_next_url(next_url, headers)
         print(next_page_url)
         if next_page_url is not None:
             next_url = next_page_url
