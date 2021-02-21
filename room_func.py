@@ -1,3 +1,5 @@
+import logging_file as log_f
+
 
 def retrieve_room_type(item):
     try:
@@ -5,4 +7,5 @@ def retrieve_room_type(item):
         for room in container.find_all('strong'):
             return room.text
     except Exception:
+        log_f.logger.info("could not extract hotel's room type")
         return None

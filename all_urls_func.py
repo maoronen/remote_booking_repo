@@ -1,4 +1,5 @@
 import get_next_url_func
+import logging_file as log_f
 
 def all_urls(first_url, headers):
     """gets the first link and extract the next links that are apart of the hotels search"""
@@ -11,4 +12,8 @@ def all_urls(first_url, headers):
             url_list.append(next_page_url)
         else:
             break
+    if len(url_list) < 15:
+        log_f.logger.error('could not extract all urls!')
+    else:
+        log_f.logger.info('successfully extract all urls!')
     return url_list

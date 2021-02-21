@@ -12,11 +12,8 @@ import meals_func
 import room_func
 import bed_func
 import image_func
+import conf as cfg
 import csv
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
-booking_url = 'https://www.booking.com/searchresults.en-gb.html?aid=1610684&label=sc-DnohZU0hasAqOtOM_on3ZwS380886341679%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atiaud-1110454565907%3Akwd-3403945477%3Alp1008000%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YfqnDqqG8nt10AsofPfvtt0&lang=en-gb&sid=2aab057f89707cb8a505e1056b657095&sb=1&sb_lp=1&src=country&src_elem=sb&error_url=https%3A%2F%2Fwww.booking.com%2Fcountry%2Fsc.en-gb.html%3Faid%3D1610684%3Blabel%3Dsc-DnohZU0hasAqOtOM_on3ZwS380886341679%253Apl%253Ata%253Ap1%253Ap2%253Aac%253Aap%253Aneg%253Afi%253Atiaud-1110454565907%253Akwd-3403945477%253Alp1008000%253Ali%253Adec%253Adm%253Appccp%253DUmFuZG9tSVYkc2RlIyh9YfqnDqqG8nt10AsofPfvtt0%3Bsid%3D2aab057f89707cb8a505e1056b657095%3B&ss=Seychelles&is_ski_area=0&ssne=Seychelles&ssne_untouched=Seychelles&dest_id=188&dest_type=country&checkin_year=2021&checkin_month=8&checkin_monthday=24&checkout_year=2021&checkout_month=8&checkout_monthday=31&group_adults=2&group_children=0&no_rooms=1&b_h4u_keep_filters=&from_sf=1'
 
 
 class Hotel:
@@ -66,7 +63,7 @@ class HotelsManager:
         self.url = url
         self.hotels_dict = dict()
         dict_of_hotels = dict()
-        all_urls_list = all_urls_func.all_urls(self.url, headers)
+        all_urls_list = all_urls_func.all_urls(self.url, cfg.HEADERS)
         with open("hotels_list.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = ["name", "rating", "score", "number of reviews", "price", "location", "meals", "room type",
                           "bed type", "hotel image"]
@@ -74,7 +71,7 @@ class HotelsManager:
             writer.writeheader()
 
             for link in all_urls_list:
-                link = requests.get(link, headers=headers)
+                link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
                 for item in soup.select('.sr_property_block'):
                     hotel_name = hotel_name_func.retrieve_hotel_name(item)
@@ -140,7 +137,7 @@ class HotelsManager:
 
 
 def main():
-    manager = HotelsManager(booking_url)
+    manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
     print(manager.most_expensive())
     print(manager.get_hotels_names())
     print(manager.hotels_number())
