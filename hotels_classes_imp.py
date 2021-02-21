@@ -2,16 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import all_urls_func
 import get_next_url_func
-import hotel_name_func
-import hotel_rating_func
-import score_title_func
-import total_reviews_func
-import price_func
-import location_func
-import meals_func
-import room_func
-import bed_func
-import image_func
+import retrieve_func
 import conf as cfg
 import csv
 
@@ -87,16 +78,16 @@ class HotelsManager:
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
                 for item in soup.select('.sr_property_block'):
-                    hotel_name = hotel_name_func.retrieve_hotel_name(item)
-                    hotel_rating = hotel_rating_func.retrieve_hotel_rating(item)
-                    score_title = score_title_func.retrieve_score_title(item)
-                    total_reviews = total_reviews_func.retrieve_reviews_num(item)
-                    price = price_func.retrieve_price(item)
-                    location = location_func.retrieve_hotel_location(item)
-                    meals = meals_func.retrieve_meals(item)
-                    room_type = room_func.retrieve_room_type(item)
-                    bed_type = bed_func.retrieve_bed_type(item)
-                    hotel_image = image_func.retrieve_image_url(item)
+                    hotel_name = retrieve_func.retrieve_hotel_name(item)
+                    hotel_rating = retrieve_func.retrieve_hotel_rating(item)
+                    score_title = retrieve_func.retrieve_score_title(item)
+                    total_reviews = retrieve_func.retrieve_reviews_num(item)
+                    price = retrieve_func.retrieve_price(item)
+                    location = retrieve_func.retrieve_hotel_location(item)
+                    meals = retrieve_func.retrieve_meals(item)
+                    room_type = retrieve_func.retrieve_room_type(item)
+                    bed_type = retrieve_func.retrieve_bed_type(item)
+                    hotel_image = retrieve_func.retrieve_image_url(item)
 
                     hotel_object = Hotel(hotel_name=hotel_name,
                                          hotel_rating=hotel_rating,
