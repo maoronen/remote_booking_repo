@@ -11,8 +11,8 @@ count = 0
 for item in soup.select('.sr_property_block'):
     try:
         print(f"Hotel name: {item.select('.sr-hotel__name')[0].get_text().strip()}")
-        print("Island name: ", item.select('.bui-link')[0].get_text().strip().split('\n')[0])
-        print(f"jhgjhgjhgjhgHotel rating: {type(item.select('.bui-review-score__badge')[0].get_text().strip())}")
+        print("Island name: ", item.select('.bui-link')[0].get_text().strip().split('\n')[0].strip())
+        print(f"jhgjhgjhgjhgHotel rating: {item.select('.bui-review-score__badge')[0].get_text().strip()}")
         print(f"Hotel rating title: {item.select('.bui-review-score__title')[0].get_text().strip()}")
         print(f"The Hotel has {type(item.select('.bui-review-score__text')[0].get_text().strip().split()[0])}")
         print("Click the link to see the hotel: ", item.select('.hotel_image')[0]['data-highres'])
