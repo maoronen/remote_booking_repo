@@ -1,7 +1,7 @@
 import logging
 import sys
 
-logger = logging.getLogger('Booking')
+logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 # Create Formatter

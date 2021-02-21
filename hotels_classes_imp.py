@@ -20,18 +20,18 @@ class Hotel:
         self._room_type = room_type
         self._bed_type = bed_type
         self._hotel_image = hotel_image
-        #self._dict_of_hotels = dict()
+        self._dict_of_hotels = dict()
 
-    # def get_hotels_as_dict(self):
-    #     self._dict_of_hotels[self._hotel_name] = {'hotel rating': self._hotel_rating,
-    #                                         'score title': self._score_title,
-    #                                         'num of reviews': self._total_reviews,
-    #                                         'price': self._price,
-    #                                         'location': self._location,
-    #                                         'meals': self._meals,
-    #                                         'room type': self._room_type,
-    #                                         'image url': self._hotel_image}
-    #     return self._dict_of_hotels
+    def get_hotels_as_dict(self):
+        self._dict_of_hotels = {'hotel rating': self._hotel_rating,
+                                            'score title': self._score_title,
+                                            'num of reviews': self._total_reviews,
+                                            'price': self._price,
+                                            'location': self._location,
+                                            'meals': self._meals,
+                                            'room type': self._room_type,
+                                            'image url': self._hotel_image}
+        return self._dict_of_hotels
 
 
     def get_hotel_name(self):
@@ -100,7 +100,7 @@ class HotelsManager:
                                          bed_type=bed_type,
                                          hotel_image=hotel_image)
                     self.hotels_dict[hotel_object.get_hotel_name()] = hotel_object
-                    #self.dict_of_hotels = hotel_object.get_hotels_as_dict()
+                    self.dict_of_hotels[hotel_object.get_hotel_name()] = hotel_object.get_hotels_as_dict()
                     writer.writerow({'name': hotel_name,
                                      'rating': hotel_rating,
                                      'score': score_title,
@@ -148,7 +148,7 @@ def main():
     #print(manager.most_expensive())
     #print(manager.get_hotels_names())
     #print(manager.hotels_number())
-    #print(manager.get_hotels_as_dict())
+    print(manager.get_hotels_as_dict())
 
 
 
