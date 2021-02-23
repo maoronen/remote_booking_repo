@@ -8,6 +8,7 @@ def retrieve_hotel_name(item):
     except IndexError:
         log_f.logging.info("could not extract hotel's rating")
         return None
+
 # 2
 def retrieve_hotel_rating(item):
     try:
@@ -36,7 +37,6 @@ def retrieve_reviews_num(item):
 def retrieve_hotel_location(item):
     try:
         return item.select('.bui-link')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].strip()
-
     except Exception:
         log_f.logging.info("could not extract hotel's location")
         return None

@@ -29,6 +29,11 @@ def get_next_url(page_url):
 
 def all_urls(first_url):
     """gets the first link and extract the next links that are apart of the hotels search"""
+    try:  # test if the input is valid url
+        first_link = requests.get(first_url, headers=cfg.HEADERS)
+    except requests.ConnectionError:
+        log_f.logger.critical('URL does not exist on internet!')
+        sys.exit(1)
     url_list = [first_url]
     next_url = first_url
     while True:
@@ -38,7 +43,7 @@ def all_urls(first_url):
             url_list.append(next_page_url)
         else:
             break
-    if len(url_list) < 15:
+    if len(url_list) < cfg.NUM_URLS:
         log_f.logger.error('could not extract all urls!')
     else:
         log_f.logger.info('successfully extract all urls!')
