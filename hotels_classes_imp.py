@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import all_urls_func
-import get_next_url_func
+import get_urls
 import retrieve_func
 import conf as cfg
 import csv
@@ -67,7 +66,7 @@ class HotelsManager:
         self.url = url
         self.hotels_dict = dict()
         self.dict_of_hotels = dict()
-        all_urls_list = all_urls_func.all_urls(self.url, cfg.HEADERS)
+        all_urls_list = get_urls.all_urls(self.url)
         with open("hotels_list1.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = ["name", "rating", "score", "number of reviews", "price", "location", "meals", "room type",
                           "bed type", "hotel image"]
@@ -77,7 +76,7 @@ class HotelsManager:
             for link in all_urls_list:
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
-                for item in soup.select('.sr_property_block'):
+                for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_name = retrieve_func.retrieve_hotel_name(item)
                     hotel_rating = retrieve_func.retrieve_hotel_rating(item)
                     score_title = retrieve_func.retrieve_score_title(item)
@@ -101,27 +100,16 @@ class HotelsManager:
                                          hotel_image=hotel_image)
                     self.hotels_dict[hotel_object.get_hotel_name()] = hotel_object
                     self.dict_of_hotels[hotel_object.get_hotel_name()] = hotel_object.get_hotels_as_dict()
-                    writer.writerow({'name': hotel_name,
-                                     'rating': hotel_rating,
-                                     'score': score_title,
-                                     'number of reviews': total_reviews,
-                                     'price': price,
-                                     'location': location,
-                                     'meals': meals,
-                                     'room type': room_type,
-                                     'bed type': bed_type,
-                                     'hotel image': hotel_image})
-
-                    #dict_of_hotels[hotel_object.get_hotel_name()] = {'hotel rating': hotel_rating,
-                                                                  #   'score title': score_title,
-                                                                   #  'num of reviews': total_reviews,
-                                                                    # 'price per week': price,
-                                                                     #'location': location,
-                                                                    # 'meals': meals,
-                                                                    # 'room type': room_type,
-                                                                    # 'image url': hotel_image}
-            #print(dict_of_hotels)
-            #I don't remember why we wanted to do this dict_of_hotels
+                    writer.writerow({cfg.HOTEL_NAME_KEY: hotel_name,
+                                     cfg.HOTEL_RATING_KEY: hotel_rating,
+                                     cfg.SCORE_KEY: score_title,
+                                     cfg.NUMBER_OF_REVIEWS_KEY: total_reviews,
+                                     cfg.PRICE_KEY: price,
+                                     cfg.LOCATION_KEY: location,
+                                     cfg.MEALS_KEY: meals,
+                                     cfg.ROOM_TYPE_KEY: room_type,
+                                     cfg.BED_TYPE_KEY: bed_type,
+                                     cfg.HOTEL_IMAGE_KEY: hotel_image})
 
 
     def get_hotels_as_dict(self):
@@ -145,9 +133,9 @@ class HotelsManager:
 
 def main():
     manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
-    #print(manager.most_expensive())
-    #print(manager.get_hotels_names())
-    #print(manager.hotels_number())
+    # print(manager.most_expensive())
+    # print(manager.get_hotels_names())
+    # print(manager.hotels_number())
     print(manager.get_hotels_as_dict())
 
 

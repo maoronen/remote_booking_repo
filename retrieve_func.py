@@ -3,13 +3,16 @@ import logging_file as log_f
 
 # 1
 def retrieve_hotel_name(item):
-    return item.select(cfg.HOTEL_NAME)[cfg.TEXT].get_text().split('\n')[1]
-
+    try:
+        return item.select(cfg.HOTEL_NAME)[cfg.TEXT].get_text().split('\n')[1]
+    except IndexError:
+        log_f.logging.info("could not extract hotel's rating")
+        return None
 # 2
 def retrieve_hotel_rating(item):
     try:
         return float(item.select(cfg.HOTEL_RATING)[cfg.TEXT].get_text().strip())
-    except Exception:
+    except IndexError:
         log_f.logging.info("could not extract hotel's rating")
         return None
 
@@ -17,7 +20,7 @@ def retrieve_hotel_rating(item):
 def retrieve_score_title(item):
     try:
         return item.select(cfg.SCORE_TITLE)[cfg.TEXT].get_text().strip()
-    except Exception:
+    except IndexError:
         log_f.logger.info("could not extract hotel's score title")
         return None
 
@@ -25,7 +28,7 @@ def retrieve_score_title(item):
 def retrieve_reviews_num(item):
     try:
         return int(item.select(cfg.TOTAL_REVIEWS)[cfg.TEXT].get_text().strip().split()[0].replace(",", ""))
-    except Exception:
+    except IndexError:
         log_f.logger.info("could not extract hotel's reviews number")
         return None
 
