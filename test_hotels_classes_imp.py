@@ -9,9 +9,9 @@ def test_get_hotels_as_dict_type():
     hotels_dict = test_hotel.get_hotels_as_dict()
 
     assert type(hotels_dict) == dict
-    for i in range(len(hotels_dict.keys())):
-        assert type(hotels_dict.keys()[i]) == str
-        assert type(hotels_dict.values()[i]) == dict
+    for key, value in hotels_dict.items():
+        assert type(key) == str
+        assert type(value) == dict
 
 
 def test_get_hotels_as_dict_keys():
@@ -21,9 +21,12 @@ def test_get_hotels_as_dict_keys():
 
     # verify all hotel params are as expected
     for constant_key in cfg.ALL_HOTEL_KEYS:
-        for val in hotels_dict.values:
-            assert constant_key in val.keys()
-            assert len(val.keys) == len(cfg.ALL_HOTEL_KEYS)
+        if constant_key == 'hotel name':
+            continue
+        else:
+            for val in hotels_dict.values():
+                assert constant_key in val.keys()
+                assert len(list(val.keys())) == len(cfg.ALL_HOTEL_KEYS) - 1  # 'hotel name' is a master key
 
 
 def test_hotels_number():
@@ -36,7 +39,7 @@ def test_hotels_number():
 
 
 def test_get_hotels_names():
-    #setup
+    # setup
     test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_names = test_hotel.get_hotels_names()
 

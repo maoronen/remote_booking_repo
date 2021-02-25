@@ -24,14 +24,14 @@ TOTAL_REVIEWS = '.bui-review-score__text'
 # constant keys for the hotels dictionary
 HOTEL_NAME_KEY = "hotel name"
 HOTEL_RATING_KEY = "hotel rating"
-SCORE_TITLE_KEY = 'score'
-NUMBER_OF_REVIEWS_KEY = 'number of reviews'
+SCORE_TITLE_KEY = 'score title'
+NUMBER_OF_REVIEWS_KEY = 'num of reviews'
 PRICE_KEY = "price"
 LOCATION_KEY = "location"
 MEALS_KEY = "meals"
-ROOM_TYPE_KEY = "room_type"
-BED_TYPE_KEY = "bed_type"
-HOTEL_IMAGE_KEY = "hotel_image"
+ROOM_TYPE_KEY = "room type"
+BED_TYPE_KEY = "bed type"
+HOTEL_IMAGE_KEY = "image url"
 
 
 ALL_HOTEL_KEYS = [HOTEL_NAME_KEY, HOTEL_RATING_KEY, SCORE_TITLE_KEY, NUMBER_OF_REVIEWS_KEY, PRICE_KEY, LOCATION_KEY, MEALS_KEY, ROOM_TYPE_KEY, BED_TYPE_KEY, HOTEL_IMAGE_KEY]

@@ -64,9 +64,9 @@ def test_retrieve_meals():
         assert type(meals) == str
 
 
-def test_retrieve_location():
+def test_retrieve_hotel_location():
     block = block_setup(cfg.BOOKING_SEYCHELLES)
-    location = rf.retrieve_location(block)
+    location = rf.retrieve_hotel_location(block)
     if location:  # if not None
         assert type(location) == str
 
