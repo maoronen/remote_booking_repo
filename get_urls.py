@@ -8,11 +8,16 @@ import conf as cfg
 def get_next_url(page_url):
     """gets url and returns the next page url if exist, if not returns None"""
     next_url = None
+
+    # url = requests.get(page_url, headers=cfg.HEADERS)
     try:
         url = requests.get(page_url, headers=cfg.HEADERS)
-    except requests.ConnectionError:
+    except requests.exceptions.SSLError:
+    # except requests.ConnectionError:
         log_f.logger.critical('URL does not exist on internet!')
         sys.exit(1)
+
+
     soup = BeautifulSoup(url.content, "html.parser")
     c = soup.find('div', class_="bui-pagination")
     try:
@@ -27,13 +32,13 @@ def get_next_url(page_url):
     return next_url
 
 
-def all_urls(first_url):
+def get_all_urls(first_url):
     """gets the first link and extract the next links that are apart of the hotels search"""
-    try:  # test if the input is valid url
-        first_link = requests.get(first_url, headers=cfg.HEADERS)
-    except requests.ConnectionError:
-        log_f.logger.critical('URL does not exist on internet!')
-        sys.exit(1)
+    # try:  # test if the input is valid url
+    #     first_link = requests.get(first_url, headers=cfg.HEADERS)
+    # except requests.ConnectionError:
+    #     log_f.logger.critical('URL does not exist on internet!')
+    #     sys.exit(1)
     url_list = [first_url]
     next_url = first_url
     while True:

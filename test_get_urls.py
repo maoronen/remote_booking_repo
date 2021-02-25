@@ -31,9 +31,9 @@ def test_get_next_url_is_none():  # when inserting the last url
 
 
 def test_get_all_urls_error_failure():  # in case inserting invalid url
-    with pytest.raises(requests.ConnectionError):
+    with pytest.raises(requests.exceptions.SSLError):
         get_urls.get_all_urls(cfg.WRONG_URL_TEST)
-    print("checking ConnectionError in case of invalid url: succeed")
+    # print("checking ConnectionError in case of invalid url: succeed")
 
 
 def test_get_all_urls_success():

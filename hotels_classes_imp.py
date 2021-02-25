@@ -29,6 +29,7 @@ class Hotel:
                                 'location': self._location,
                                 'meals': self._meals,
                                 'room type': self._room_type,
+                                'bed type': self._bed_type,
                                 'image url': self._hotel_image}
         return self._dict_of_hotels
 
@@ -65,7 +66,8 @@ class HotelsManager:
         self.url = url
         self.hotels_dict = dict()
         self.dict_of_hotels = dict()
-        all_urls_list = get_urls.all_urls(self.url)
+        #all_urls_list = get_urls.get_all_urls(cfg.WRONG_URL_TEST)
+        all_urls_list = get_urls.get_all_urls(self.url)
         with open("hotels_list1.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [cfg.HOTEL_NAME_KEY, cfg.HOTEL_RATING_KEY, cfg.SCORE_TITLE_KEY, cfg.NUMBER_OF_REVIEWS_KEY,
                           cfg.PRICE_KEY, cfg.LOCATION_KEY, cfg.MEALS_KEY, cfg.ROOM_TYPE_KEY, cfg.BED_TYPE_KEY,
@@ -120,7 +122,7 @@ class HotelsManager:
         return len(self.hotels_dict.keys())
 
     def get_hotels_names(self):
-        return self.hotels_dict.keys()
+        return list(self.hotels_dict.keys())
 
     def most_expensive(self):
         price = 0
@@ -133,11 +135,14 @@ class HotelsManager:
 
 
 def main():
-    manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
-    print(manager.most_expensive())
-    print(manager.get_hotels_names())
-    print(manager.hotels_number())
-    print(manager.get_hotels_as_dict())
+    # manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
+    manager = HotelsManager(cfg.WRONG_URL_TEST)
+
+    # print(manager.most_expensive())
+    # print(manager.get_hotels_names())
+    # print(manager.hotels_number())
+    # print(manager.get_hotels_as_dict())
+    # my_dict = manager.get_hotels_as_dict()
 
 
 if __name__ == '__main__':
