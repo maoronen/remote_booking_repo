@@ -21,7 +21,7 @@ def test_get_hotels_as_dict_keys():
 
     # verify all hotel params are as expected
     for constant_key in cfg.ALL_HOTEL_KEYS:
-        if constant_key == 'hotel name':
+        if constant_key == cfg.HOTEL_NAME_KEY:
             continue
         else:
             for val in hotels_dict.values():
