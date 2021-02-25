@@ -9,14 +9,11 @@ def get_next_url(page_url):
     """gets url and returns the next page url if exist, if not returns None"""
     next_url = None
 
-    # url = requests.get(page_url, headers=cfg.HEADERS)
     try:
         url = requests.get(page_url, headers=cfg.HEADERS)
     except requests.exceptions.SSLError:
-    # except requests.ConnectionError:
         log_f.logger.critical('URL does not exist on internet!')
         sys.exit(1)
-
 
     soup = BeautifulSoup(url.content, "html.parser")
     c = soup.find('div', class_="bui-pagination")

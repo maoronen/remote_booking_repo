@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import get_urls
+import get_urls_func
 import retrieve_func
 import conf as cfg
 import csv
@@ -34,46 +34,52 @@ class Hotel:
         return self._dict_of_hotels
 
     def get_hotel_name(self):
+        """returns the hotel name"""
         return self._hotel_name
 
     def get_score_title(self):
+        """returns the rating of the hotel as a float"""
         return self._score_title
 
     def get_total_reviews(self):
+        """returns number of reviews as an int"""
         return self._total_reviews
 
     def get_price(self):
+        "returns the price of the accommodation as an int "
         return int(self._price)
 
     def get_location(self):
+        """returns the location of the hotel"""
         return self._location
 
     def get_meals(self):
+        """returns what meals are included with the stay"""
         return self._meals
 
     def get_room_type(self):
+        """returns the room type available at the price offered"""
         return self._room_type
 
     def get_bed_type(self):
+        """returns the bed type the room includes"""
         return self._bed_type
 
     def get_image_url(self):
+        """return a link for a representative image of the listing"""
         return self._hotel_image
 
 
 class HotelsManager:
     def __init__(self, url):
-        self.url = url
-        self.hotels_dict = dict()
-        self.dict_of_hotels = dict()
-        #all_urls_list = get_urls.get_all_urls(cfg.WRONG_URL_TEST)
-        all_urls_list = get_urls.get_all_urls(self.url)
-        with open("hotels_list1.csv", "w", encoding='utf-8', newline="") as booking_file:
+        self._url = url
+        self._hotels_dict = dict()
+        self._dict_of_hotels = dict()
+        all_urls_list = get_urls_func.get_all_urls(self._url)
+        with open("hotels_table.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [cfg.HOTEL_NAME_KEY, cfg.HOTEL_RATING_KEY, cfg.SCORE_TITLE_KEY, cfg.NUMBER_OF_REVIEWS_KEY,
                           cfg.PRICE_KEY, cfg.LOCATION_KEY, cfg.MEALS_KEY, cfg.ROOM_TYPE_KEY, cfg.BED_TYPE_KEY,
                           cfg.HOTEL_IMAGE_KEY]
-            # fieldnames = ["name", "rating", "score", "number of reviews", "price", "location", "meals", "room type",
-            #"bed type", "hotel image"]
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
@@ -93,17 +99,21 @@ class HotelsManager:
                     hotel_image = retrieve_func.retrieve_image_url(item)
 
                     hotel_object = Hotel(hotel_name=hotel_name,
-                    hotel_rating =hotel_rating,
-                    score_title =score_title,
-                    total_reviews =total_reviews,
-                    price =price,
-                    location =location,
-                    meals =meals,
-                    room_type =room_type,
-                    bed_type =bed_type,
-                    hotel_image =hotel_image)
-                    self.hotels_dict[hotel_object.get_hotel_name()] = hotel_object
-                    self.dict_of_hotels[hotel_object.get_hotel_name()] = hotel_object.get_hotels_as_dict()
+                                         hotel_rating=hotel_rating,
+                                         score_title=score_title,
+                                         total_reviews=total_reviews,
+                                         price=price,
+                                         location=location,
+                                         meals=meals,
+                                         room_type=room_type,
+                                         bed_type=bed_type,
+                                         hotel_image=hotel_image)
+                    self._hotels_dict[hotel_object.get_hotel_name()] = hotel_object
+                    # in the line above a dictionary is created where the key is hotel name and the value is an hotel
+                    # instance
+                    self._dict_of_hotels[hotel_object.get_hotel_name()] = hotel_object.get_hotels_as_dict()
+                    # in the line above using a hotel class method named 'get_hotels_as_dict(), each iteration
+                    # a dict of specific hotel (with all the hotel's attributes) is added to the dict_of_hotels.
                     writer.writerow({cfg.HOTEL_NAME_KEY: hotel_name,
                                      cfg.HOTEL_RATING_KEY: hotel_rating,
                                      cfg.SCORE_TITLE_KEY: score_title,
@@ -116,18 +126,22 @@ class HotelsManager:
                                      cfg.HOTEL_IMAGE_KEY: hotel_image})
 
     def get_hotels_as_dict(self):
-        return self.dict_of_hotels
+        """returns a giant dict with all the hotels names as keys and hotel details as a nested dict"""
+        return self._dict_of_hotels
 
     def hotels_number(self):
-        return len(self.hotels_dict.keys())
+        """returns the amount of hotels that are available"""
+        return len(self._hotels_dict.keys())
 
     def get_hotels_names(self):
-        return list(self.hotels_dict.keys())
+        """returns a list of all hotel names"""
+        return list(self._hotels_dict.keys())
 
     def most_expensive(self):
+        """returns the most expensive hotel for that search"""
         price = 0
-        most_expensive = ""
-        for item in self.hotels_dict.values():
+        most_expensive = None
+        for item in self._hotels_dict.values():
             if item.get_price() > price:
                 price = item.get_price()
                 most_expensive = item.get_hotel_name()
@@ -135,14 +149,16 @@ class HotelsManager:
 
 
 def main():
-    # manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
-    manager = HotelsManager(cfg.WRONG_URL_TEST)
+    manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
 
-    # print(manager.most_expensive())
-    # print(manager.get_hotels_names())
-    # print(manager.hotels_number())
-    # print(manager.get_hotels_as_dict())
-    # my_dict = manager.get_hotels_as_dict()
+    print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
+          f'its price is {manager.most_expensive()[cfg.INDEX_PRICE_TUPLE]} NIS')
+    print('**************')
+    for hotel in manager.get_hotels_names():
+        print(hotel)
+    print('**************')
+    print(f'The numbers of hotels that are available in Seychelles in 24-31.8.2021 is {manager.hotels_number()}')
+
 
 
 if __name__ == '__main__':

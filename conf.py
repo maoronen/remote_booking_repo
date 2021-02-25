@@ -12,6 +12,10 @@ NO_SPACE = 1
 DIGIT = 1
 HOTEL_BLOCK = '.sr_property_block'
 
+# for most_expensive() of hotelsManager class
+INDEX_HOTEL_TUPLE = 0
+INDEX_PRICE_TUPLE = 1
+
 # search variables
 HOTEL_NAME = '.sr-hotel__name'
 HOTEL_RATING = '.bui-review-score__badge'

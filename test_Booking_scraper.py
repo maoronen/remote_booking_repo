@@ -1,12 +1,12 @@
 import pytest
 import conf as cfg
-import hotels_classes_imp as hotel_class
+import Booking_scraper_main_code as BookScrap
 
 
 def test_get_hotels_as_dict_type():
     """Tests the type of the variable the function 'get_hotels_as_dict' returns"""
     # setup
-    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = BookScrap.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_dict = test_hotel.get_hotels_as_dict()
 
     assert type(hotels_dict) == dict
@@ -19,7 +19,7 @@ def test_get_hotels_as_dict_keys():
     """Tests if the function 'get_hotels_as_dict' returns a dictionary where the values.keys() are all
         the parameters names that were extract from web parsing and only them """
     # setup
-    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = BookScrap.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_dict = test_hotel.get_hotels_as_dict()
 
     # verify all hotel params are as expected
@@ -36,7 +36,7 @@ def test_hotels_number():
     """Tests if the function 'hotels_number' returns a type int variable and that it greater than the 'minimum hotels'
         number', which is a slightly lower number of hotels than the urls contain """
     # setup
-    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = BookScrap.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_number = test_hotel.hotels_number()
 
     assert type(hotels_number) == int
@@ -47,7 +47,7 @@ def test_get_hotels_names():
     """tests if the function 'get_hotels_names' returns a list of strings and that the length of the list is
         above the minimum hotels' number, which is a slightly lower number of hotels than the urls contain"""
     # setup
-    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = BookScrap.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_names = test_hotel.get_hotels_names()
 
     assert type(hotels_names) == list
@@ -60,7 +60,7 @@ def test_get_most_expensive():
     """Tests if the function 'most_expensive' returns a tuple, when the first element is the hotel
         name and the second one is a number above zero (price)"""
     # setup
-    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = BookScrap.HotelsManager(cfg.BOOKING_SEYCHELLES)
     most_expensive = test_hotel.most_expensive()
     hotels_dict = test_hotel.get_hotels_as_dict()
 
