@@ -5,7 +5,7 @@ import hotels_classes_imp as hotel_class
 
 def test_get_hotels_as_dict_type():
     # setup
-    test_hotel = hotel_class.HotelManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_dict = test_hotel.get_hotels_as_dict()
 
     assert type(hotels_dict) == dict
@@ -16,7 +16,7 @@ def test_get_hotels_as_dict_type():
 
 def test_get_hotels_as_dict_keys():
     # setup
-    test_hotel = hotel_class.HotelManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_dict = test_hotel.get_hotels_as_dict()
 
     # verify all hotel params are as expected
@@ -28,7 +28,7 @@ def test_get_hotels_as_dict_keys():
 
 def test_hotels_number():
     # setup
-    test_hotel = hotel_class.HotelManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_number = test_hotel.hotels_number()
 
     assert type(hotels_number) == int
@@ -37,7 +37,7 @@ def test_hotels_number():
 
 def test_get_hotels_names():
     #setup
-    test_hotel = hotel_class.HotelManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     hotels_names = test_hotel.get_hotels_names()
 
     assert type(hotels_names) == list
@@ -48,7 +48,7 @@ def test_get_hotels_names():
 
 def test_get_most_expensive():
     # setup
-    test_hotel = hotel_class.HotelManager(cfg.BOOKING_SEYCHELLES)
+    test_hotel = hotel_class.HotelsManager(cfg.BOOKING_SEYCHELLES)
     most_expensive = test_hotel.most_expensive()
     hotels_dict = test_hotel.get_hotels_as_dict()
 
