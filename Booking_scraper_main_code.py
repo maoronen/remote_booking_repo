@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import get_urls_func
 import retrieve_func
+import scrape_requested_url
 import conf as cfg
 import csv
 
@@ -149,15 +150,14 @@ class HotelsManager:
 
 
 def main():
-    manager = HotelsManager(cfg.BOOKING_SEYCHELLES)
-
+    manager = HotelsManager(scrape_requested_url.requested_url())
     print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
           f'its price is {manager.most_expensive()[cfg.INDEX_PRICE_TUPLE]} NIS')
     print('**************')
     for hotel in manager.get_hotels_names():
         print(hotel)
     print('**************')
-    print(f'The numbers of hotels that are available in Seychelles in 24-31.8.2021 is {manager.hotels_number()}')
+    print(f'The numbers of hotels that are available in your destination is {manager.hotels_number()}')
 
 
 

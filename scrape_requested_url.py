@@ -9,7 +9,7 @@ url = "https://www.booking.com"
 
 
 def url_for_parsing(destination, checkin, checkout, adults, children, rooms):
-
+    """"""
     # Initialize webdriver and put the path where download the driver
     driver = webdriver.Chrome(ChromeDriverManager().install())
 
@@ -70,17 +70,15 @@ def args_parse():
 
     args = parser.parse_args()
     if args.checkin > args.checkout:
-        args.checkout = args.checkin + timedelta(days=1)
+        args.checkout = args.checkin + timedelta(days=1)  # if checkout < checkin, calculate one night
     return args
 
 
-def main():
+def requested_url():
     args = args_parse()
-    print(args.destination)
     requested_url = url_for_parsing(args.destination, args.checkin, args.checkout, args.adults, args.children, args.rooms)
     return requested_url
 
 
-if __name__ == '__main__':
-    print(main())
 
+print(requested_url())
