@@ -17,27 +17,50 @@ INDEX_HOTEL_TUPLE = 0
 INDEX_PRICE_TUPLE = 1
 
 # search variables
-HOTEL_NAME = '.sr-hotel__name'
-HOTEL_RATING = '.bui-review-score__badge'
-HOTEL_IMAGE = '.hotel_image'
-MEALS = '.add-red-tag__amount'
-PRICE = '.bui-price-display__value'
-SCORE_TITLE = '.bui-review-score__title'
-TOTAL_REVIEWS = '.bui-review-score__text'
+HOTEL_NAME_SCRAPER = '.sr-hotel__name'
+HOTEL_RATING_SCRAPER = '.bui-review-score__badge'
+HOTEL_IMAGE_SCRAPER = '.hotel_image'
+MEALS_SCRAPER = '.add-red-tag__amount'
+PRICE_SCRAPER = '.bui-price-display__value'
+SCORE_TITLE_SCRAPER = '.bui-review-score__title'
+TOTAL_REVIEWS_SCRAPER = '.bui-review-score__text'
 
 # constant keys for the hotels dictionary
-HOTEL_NAME_KEY = "hotel name"
-HOTEL_RATING_KEY = "hotel rating"
-SCORE_TITLE_KEY = 'score title'
-NUMBER_OF_REVIEWS_KEY = 'num of reviews'
-PRICE_KEY = "price"
-LOCATION_KEY = "location"
-MEALS_KEY = "meals"
-ROOM_TYPE_KEY = "room type"
-BED_TYPE_KEY = "bed type"
-HOTEL_IMAGE_KEY = "image url"
+HOTEL_NAME = "hotel name"
+HOTEL_RATING = "hotel rating"
+SCORE_TITLE = 'score title'
+NUMBER_OF_REVIEWS = 'num of reviews'
+PRICE = "price"
+LOCATION = "location"
+MEALS = "meals"
+ROOM_TYPE = "room type"
+BED_TYPE = "bed type"
+HOTEL_IMAGE = "image url"
 
 
-ALL_HOTEL_KEYS = [HOTEL_NAME_KEY, HOTEL_RATING_KEY, SCORE_TITLE_KEY, NUMBER_OF_REVIEWS_KEY, PRICE_KEY, LOCATION_KEY, MEALS_KEY, ROOM_TYPE_KEY, BED_TYPE_KEY, HOTEL_IMAGE_KEY]
+ALL_HOTEL_KEYS = [HOTEL_NAME, HOTEL_RATING, SCORE_TITLE, NUMBER_OF_REVIEWS, PRICE, LOCATION, MEALS, ROOM_TYPE, BED_TYPE, HOTEL_IMAGE]
 
 MIN_HOTELS_NUMBER = 340
+
+# variables dictionary
+config_dict = {'HOTEL_NAME_SCRAPER': '.sr-hotel__name', 'HOTEL_RATING_SCRAPER': '.bui-review-score__badge',
+               'HOTEL_IMAGE_SCRAPER': '.hotel_image', 'MEALS_SCRAPER': '.add-red-tag__amount',
+               'PRICE_SCRAPER': '.bui-price-display__value', 'SCORE_TITLE_SCRAPER': '.bui-review-score__title',
+               'TOTAL_REVIEWS_SCRAPER': '.bui-review-score__text', 'HOTEL_NAME': "hotel name", 'HOTEL_RATING': "hotel rating",
+               'SCORE_TITLE': "score title", 'NUMBER_OF_REVIEWS': 'num of reviews', 'PRICE': "price", 'LOCATION': "location",
+               'MEALS': "meals", 'ROOM_TYPE': "room type", 'BED_TYPE': "bed type", 'HOTEL_IMAGE': "image url",
+               'INDEX_HOTEL_TUPLE': 0, 'INDEX_PRICE_TUPLE': 1, 'HOTEL_BLOCK': '.sr_property_block', 'DIGIT': 1,
+               'NO_SPACE': 1, 'TEXT': 0,
+               'HEADERS': {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'},
+               'WRONG_URL_TEST': "https://www.bookin.com", 'BOOKING_COM': "https://www.booking.com"}
+
+# config_dict = {HOTEL_NAME_SCRAPER: '.sr-hotel__name', HOTEL_RATING_SCRAPER: '.bui-review-score__badge',
+#                HOTEL_IMAGE_SCRAPER: '.hotel_image', MEALS_SCRAPER: '.add-red-tag__amount',
+#                PRICE_SCRAPER: '.bui-price-display__value', SCORE_TITLE_SCRAPER: '.bui-review-score__title',
+#                TOTAL_REVIEWS_SCRAPER: '.bui-review-score__text', HOTEL_NAME: "hotel name", HOTEL_RATING: "hotel rating",
+#                SCORE_TITLE: "score title", NUMBER_OF_REVIEWS: 'num of reviews', PRICE: "price", LOCATION: "location",
+#                MEALS: "meals", ROOM_TYPE: "room type", BED_TYPE: "bed type", HOTEL_IMAGE: "image url",
+#                INDEX_HOTEL_TUPLE: 0, INDEX_PRICE_TUPLE: 1, HOTEL_BLOCK: '.sr_property_block', DIGIT: 1,
+#                NO_SPACE: 1, TEXT: 0,
+#                HEADERS: {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'},
+#                WRONG_URL_TEST: "https://www.bookin.com", BOOKING_COM: "https://www.booking.com"}

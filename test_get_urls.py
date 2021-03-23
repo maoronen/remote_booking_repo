@@ -27,12 +27,6 @@ def test_get_next_url_is_none():  # when inserting the last url
     assert not next_link
 
 
-def test_get_all_urls_success():
-    """Tests if the function get_all_urls returns a list with at least 15 elements"""
-    # setup
-    all_links = get_urls_func.get_all_urls(cfg.BOOKING_SEYCHELLES)
-    assert type(all_links) == list
-    assert len(all_links) >= cfg.NUM_URLS
 
 
 def test_get_all_urls_are_urls():

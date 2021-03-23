@@ -21,7 +21,9 @@ def url_for_parsing(destination, checkin, checkout, adults, children, rooms):
     search.send_keys(Keys.RETURN)
     destination_url = driver.current_url
 
-    # url manipulation in order to insert the requested date
+    # url manipulation in order to insert the requested date.
+
+    # first step: inserting checking_monthday to the url
     destination_url = destination_url.split("checkin_month=&")
     first_url = destination_url[0] + "checkin_month=&checkin_monthday=&"
     second_url = destination_url[1].split("checkout_month=&")
@@ -29,6 +31,7 @@ def url_for_parsing(destination, checkin, checkout, adults, children, rooms):
 
     destination_url = first_url + second_url
 
+    # second, inserting the days, month, year, adults, children and rooms to the url
     filter_dict = {r"checkin_monthday=": f"checkin_monthday={checkin.day}",
                    r"checkout_monthday=": f"checkout_monthday={checkout.day}",
                    r"checkin_month=": f"checkin_month={checkin.month}",
@@ -70,7 +73,7 @@ def args_parse():
 
     args = parser.parse_args()
     if args.checkin > args.checkout:
-        args.checkout = args.checkin + timedelta(days=1)  # if checkout < checkin, calculate one night
+        args.checkout = args.checkin + timedelta(days=1)  # if checkout < checkin, calculate one night only
     return args
 
 

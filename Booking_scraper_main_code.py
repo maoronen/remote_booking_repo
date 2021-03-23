@@ -1,86 +1,137 @@
 import requests
 from bs4 import BeautifulSoup
 import get_urls_func
-import retrieve_func
 import scrape_requested_url
 import conf as cfg
 import csv
+import logging_file as log_f
 
 
-class Hotel:
-    def __init__(self, hotel_name, hotel_rating, score_title, total_reviews, price,
-                 location, meals, room_type, bed_type, hotel_image):
-        self._hotel_name = hotel_name
-        self._hotel_rating = hotel_rating
-        self._score_title = score_title
-        self._total_reviews = total_reviews
-        self._price = price
-        self._location = location
-        self._meals = meals
-        self._room_type = room_type
-        self._bed_type = bed_type
-        self._hotel_image = hotel_image
-        self._dict_of_hotels = dict()
+class HotelBlock:
+    """The class represent a hotel object.
+        attributes:
+        hotel_html_item: html code of the hotel
+        hotel_dict = a dictionary which contain extracted data from the hotel_html_item"""
 
-    def get_hotels_as_dict(self):
-        self._dict_of_hotels = {'hotel rating': self._hotel_rating,
-                                'score title': self._score_title,
-                                'num of reviews': self._total_reviews,
-                                'price': self._price,
-                                'location': self._location,
-                                'meals': self._meals,
-                                'room type': self._room_type,
-                                'bed type': self._bed_type,
-                                'image url': self._hotel_image}
-        return self._dict_of_hotels
+    def __init__(self, hotel_html_item):
+        self.hotel_html_item = hotel_html_item
+        self._hotel_dict = dict()
 
-    def get_hotel_name(self):
+    def retrieve_hotel_name(self):
         """returns the hotel name"""
-        return self._hotel_name
+        try:
+            return self.hotel_html_item.select(cfg.HOTEL_NAME_SCRAPER)[cfg.TEXT].get_text().split('\n')[1]
+        except IndexError:
+            log_f.logging.info("could not extract hotel's rating")
+            return None
 
-    def get_score_title(self):
-        """returns the rating of the hotel as a float"""
-        return self._score_title
+    def retrieve_hotel_rating(self):
+        """returns the rating of the hotel as a float between 0-10"""
+        try:
+            return float(self.hotel_html_item.select(cfg.HOTEL_RATING_SCRAPER)[cfg.TEXT].get_text().strip())
+        except IndexError:
+            log_f.logging.info("could not extract hotel's rating")
+            return None
 
-    def get_total_reviews(self):
-        """returns number of reviews as an int"""
-        return self._total_reviews
+    def retrieve_score_title(self):
+        """returns the rating of the hotel as a str"""
+        try:
+            return self.hotel_html_item.select(cfg.SCORE_TITLE_SCRAPER)[cfg.TEXT].get_text().strip()
+        except IndexError:
+            log_f.logger.info("could not extract hotel's score title")
+            return None
 
-    def get_price(self):
-        "returns the price of the accommodation as an int "
-        return int(self._price)
+    def retrieve_reviews_num(self):
+        """returns the total number of reviews the hotel received"""
+        try:
+            return int(self.hotel_html_item.select(cfg.TOTAL_REVIEWS_SCRAPER)[cfg.TEXT].get_text().strip().split()[0].replace(",", ""))
+        except IndexError:
+            log_f.logger.info("could not extract hotel's reviews number")
+            return None
 
-    def get_location(self):
-        """returns the location of the hotel"""
-        return self._location
+    def retrieve_hotel_location(self):
+        """returns area / city or island where the hotel is located"""
+        try:
+            return self.hotel_html_item.select('.bui-link')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].strip()
+        except Exception:
+            log_f.logging.info("could not extract hotel's location")
+            return None
 
-    def get_meals(self):
-        """returns what meals are included with the stay"""
-        return self._meals
+    def retrieve_meals(self):
+        """returns which meals (if any) are included in the hotel price"""
+        try:
+            return self.hotel_html_item.select(cfg.MEALS_SCRAPER)[cfg.TEXT].get_text().strip()
+        except Exception:
+            return None
 
-    def get_room_type(self):
-        """returns the room type available at the price offered"""
-        return self._room_type
+    def retrieve_price(self):
+        """returns the price as a int of the hotel for the entire requested period"""
+        try:
+            price = self.hotel_html_item.select(cfg.PRICE_SCRAPER)[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].split()[
+                cfg.DIGIT]
+            price = int(price.replace(",", ""))
+        except Exception:
+            log_f.logger.info("could not extract hotel's price")
+            return None
+        return price
 
-    def get_bed_type(self):
-        """returns the bed type the room includes"""
-        return self._bed_type
+    def retrieve_room_type(self):
+        """The type of room(str) priced at the hotel price"""
+        try:
+            container = self.hotel_html_item.find('div', class_='room_link')
+            print(container.text)
+            print('-------------------------')
+            # for room in container.find_all('span'):
+            return container.text.strip()
+        except Exception:
+            log_f.logger.info("could not extract hotel's room type")
+            return None
 
-    def get_image_url(self):
-        """return a link for a representative image of the listing"""
-        return self._hotel_image
+    def retrieve_bed_type(self):
+        """returns the bed type/s at the hotel room"""
+        try:
+            return self.hotel_html_item.select('.c-beds-configuration')[0].get_text().strip()
+        except Exception:
+            return None
+
+
+    def retrieve_image_url(self):
+        """returns URL for the hotel image or hotel area"""
+        try:
+            return self.hotel_html_item.select(cfg.HOTEL_IMAGE_SCRAPER)[cfg.TEXT]['data-highres']
+        except Exception:
+            log_f.logging.info("could not extract hotel's image url")
+            return None
+
+    def get_hotel_as_dict(self):
+        """returns the hotel methods as a dictionary
+        (except for the name of the hotel)"""
+        self._hotel_dict = {'hotel rating': self.retrieve_hotel_rating(),
+                                'score title': self.retrieve_score_title(),
+                                'num of reviews': self.retrieve_reviews_num(),
+                                'price': self.retrieve_price(),
+                                'location': self.retrieve_hotel_location(),
+                                'meals': self.retrieve_meals(),
+                                'room type': self.retrieve_room_type(),
+                                'bed type': self.retrieve_bed_type(),
+                                'image url': self.retrieve_image_url()}
+        return self._hotel_dict
 
 
 class HotelsManager:
+    """The class collects all the hotels in the url and creates an object to each hotel.
+        attribute:
+        'url': str. Booking link according to user requirements """
+
     def __init__(self, url):
         self._url = url
         self._hotels_dict = dict()
         self._dict_of_hotels = dict()
         all_urls_list = get_urls_func.get_all_urls(self._url)
-        with open("hotels_table.csv", "w", encoding='utf-8', newline="") as booking_file:
-            fieldnames = [cfg.HOTEL_NAME_KEY, cfg.HOTEL_RATING_KEY, cfg.SCORE_TITLE_KEY, cfg.NUMBER_OF_REVIEWS_KEY,
-                          cfg.PRICE_KEY, cfg.LOCATION_KEY, cfg.MEALS_KEY, cfg.ROOM_TYPE_KEY, cfg.BED_TYPE_KEY,
-                          cfg.HOTEL_IMAGE_KEY]
+        with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
+            fieldnames = [cfg.HOTEL_NAME, cfg.HOTEL_RATING, cfg.SCORE_TITLE, cfg.NUMBER_OF_REVIEWS,
+                          cfg.PRICE, cfg.LOCATION, cfg.MEALS, cfg.ROOM_TYPE, cfg.BED_TYPE,
+                          cfg.HOTEL_IMAGE]
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
@@ -88,43 +139,25 @@ class HotelsManager:
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
                 for item in soup.select(cfg.HOTEL_BLOCK):
-                    hotel_name = retrieve_func.retrieve_hotel_name(item)
-                    hotel_rating = retrieve_func.retrieve_hotel_rating(item)
-                    score_title = retrieve_func.retrieve_score_title(item)
-                    total_reviews = retrieve_func.retrieve_reviews_num(item)
-                    price = retrieve_func.retrieve_price(item)
-                    location = retrieve_func.retrieve_hotel_location(item)
-                    meals = retrieve_func.retrieve_meals(item)
-                    room_type = retrieve_func.retrieve_room_type(item)
-                    bed_type = retrieve_func.retrieve_bed_type(item)
-                    hotel_image = retrieve_func.retrieve_image_url(item)
 
-                    hotel_object = Hotel(hotel_name=hotel_name,
-                                         hotel_rating=hotel_rating,
-                                         score_title=score_title,
-                                         total_reviews=total_reviews,
-                                         price=price,
-                                         location=location,
-                                         meals=meals,
-                                         room_type=room_type,
-                                         bed_type=bed_type,
-                                         hotel_image=hotel_image)
-                    self._hotels_dict[hotel_object.get_hotel_name()] = hotel_object
+                    hotel_object = HotelBlock(item)
+
+                    self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
                     # in the line above a dictionary is created where the key is hotel name and the value is an hotel
                     # instance
-                    self._dict_of_hotels[hotel_object.get_hotel_name()] = hotel_object.get_hotels_as_dict()
+                    self._dict_of_hotels[hotel_object.retrieve_hotel_name()] = hotel_object.get_hotel_as_dict()
                     # in the line above using a hotel class method named 'get_hotels_as_dict(), each iteration
                     # a dict of specific hotel (with all the hotel's attributes) is added to the dict_of_hotels.
-                    writer.writerow({cfg.HOTEL_NAME_KEY: hotel_name,
-                                     cfg.HOTEL_RATING_KEY: hotel_rating,
-                                     cfg.SCORE_TITLE_KEY: score_title,
-                                     cfg.NUMBER_OF_REVIEWS_KEY: total_reviews,
-                                     cfg.PRICE_KEY: price,
-                                     cfg.LOCATION_KEY: location,
-                                     cfg.MEALS_KEY: meals,
-                                     cfg.ROOM_TYPE_KEY: room_type,
-                                     cfg.BED_TYPE_KEY: bed_type,
-                                     cfg.HOTEL_IMAGE_KEY: hotel_image})
+                    writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
+                                     cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
+                                     cfg.SCORE_TITLE: hotel_object.retrieve_score_title(),
+                                     cfg.NUMBER_OF_REVIEWS: hotel_object.retrieve_reviews_num(),
+                                     cfg.PRICE: hotel_object.retrieve_price(),
+                                     cfg.LOCATION: hotel_object.retrieve_hotel_location(),
+                                     cfg.MEALS: hotel_object.retrieve_meals(),
+                                     cfg.ROOM_TYPE: hotel_object.retrieve_room_type(),
+                                     cfg.BED_TYPE: hotel_object.retrieve_bed_type(),
+                                     cfg.HOTEL_IMAGE: hotel_object.retrieve_image_url()})
 
     def get_hotels_as_dict(self):
         """returns a giant dict with all the hotels names as keys and hotel details as a nested dict"""
@@ -143,9 +176,9 @@ class HotelsManager:
         price = 0
         most_expensive = None
         for item in self._hotels_dict.values():
-            if item.get_price() > price:
-                price = item.get_price()
-                most_expensive = item.get_hotel_name()
+            if item.retrieve_price() > price:
+                price = item.retrieve_price()
+                most_expensive = item.retrieve_hotel_name()
         return most_expensive, price
 
 

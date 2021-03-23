@@ -3,7 +3,7 @@ This repository contains various files regarding web-scraping Booking.com
 for a one week vacation in August in exotic Seychelles.
 
 ## Installation
-The program operates on windows OS and uses python 3.8.3
+The program operates on any OS and uses python 3.8.3
 * Create virtual environment and run:
     pip install -r requirements.txt
 * Run the booking script:
