@@ -136,13 +136,8 @@ class HotelsManager:
 
             id = 0
             for link in all_urls_list:
-                print(link)
-                print('*****')
-                print(len(all_urls_list))
-                print('&&&')
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
-                #length = len(soup.select(cfg.HOTEL_BLOCK))
 
                 for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
@@ -177,11 +172,11 @@ class HotelsManager:
 
                     id += 1  # Progressing the hotel id.
 
-                    self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
+                    #self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
                     # in the line above a dictionary is created where the key is hotel name and the value is an hotel
                     # instance
                     self._dict_of_hotels[hotel_object.retrieve_hotel_name()] = hotel_object.get_hotel_as_dict()
-                    # in the line above using a hotel class method named 'get_hotels_as_dict(), each iteration
+                    # in the line above using a hotel class method named 'get_hotel_as_dict(), each iteration
                     # a dict of specific hotel (with all the hotel's attributes) is added to the dict_of_hotels.
                     writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
                                      cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
