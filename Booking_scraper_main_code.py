@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import get_urls_func
+import get_urls
 import scrape_requested_url
 import conf as cfg
 import csv
@@ -126,7 +126,7 @@ class HotelsManager:
         self._url = url
         self._hotels_dict = dict()
         self._dict_of_hotels = dict()
-        all_urls_list = get_urls_func.get_all_urls(self._url)
+        all_urls_list = get_urls.get_all_urls(self._url)
         with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [cfg.HOTEL_NAME, cfg.HOTEL_RATING, cfg.SCORE_TITLE, cfg.NUMBER_OF_REVIEWS,
                           cfg.PRICE, cfg.LOCATION, cfg.MEALS, cfg.ROOM_TYPE, cfg.BED_TYPE,
@@ -136,15 +136,17 @@ class HotelsManager:
 
             id = 0
             for link in all_urls_list:
+
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
+                #length = len(soup.select(cfg.HOTEL_BLOCK))
 
                 for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
                     mydb = mysql.connector.connect(
                         host="localhost",
                         user="root",
-                        password="4817"
+                        password="root"
                     )
 
                     cur = mydb.cursor()
@@ -172,11 +174,11 @@ class HotelsManager:
 
                     id += 1  # Progressing the hotel id.
 
-                    #self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
+                    self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
                     # in the line above a dictionary is created where the key is hotel name and the value is an hotel
                     # instance
                     self._dict_of_hotels[hotel_object.retrieve_hotel_name()] = hotel_object.get_hotel_as_dict()
-                    # in the line above using a hotel class method named 'get_hotel_as_dict(), each iteration
+                    # in the line above using a hotel class method named 'get_hotels_as_dict(), each iteration
                     # a dict of specific hotel (with all the hotel's attributes) is added to the dict_of_hotels.
                     writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
                                      cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
@@ -213,7 +215,9 @@ class HotelsManager:
 
 
 def main():
-    manager = HotelsManager(scrape_requested_url.requested_url())
+    print
+    requested_link = scrape_requested_url.requested_url()
+    manager = HotelsManager(requested_link)
     print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
           f'its price is {manager.most_expensive()[cfg.INDEX_PRICE_TUPLE]} NIS')
     print('**************')
