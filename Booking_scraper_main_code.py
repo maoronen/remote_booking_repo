@@ -7,6 +7,7 @@ import csv
 import logging_file as log_f
 from mysql.connector import MySQLConnection, Error
 import mysql
+import pandas as pd
 
 
 class HotelBlock:
@@ -102,20 +103,6 @@ class HotelBlock:
             log_f.logging.info("could not extract hotel's image url")
             return None
 
-    def get_hotel_as_dict(self):
-        """returns the hotel methods as a dictionary
-        (except for the name of the hotel)"""
-        self._hotel_dict = {'hotel rating': self.retrieve_hotel_rating(),
-                                'score title': self.retrieve_score_title(),
-                                'num of reviews': self.retrieve_reviews_num(),
-                                'price': self.retrieve_price(),
-                                'location': self.retrieve_hotel_location(),
-                                'meals': self.retrieve_meals(),
-                                'room type': self.retrieve_room_type(),
-                                'bed type': self.retrieve_bed_type(),
-                                'image url': self.retrieve_image_url()}
-        return self._hotel_dict
-
 
 class HotelsManager:
     """The class collects all the hotels in the url and creates an object to each hotel.
@@ -172,12 +159,6 @@ class HotelsManager:
 
                     id += 1  # Progressing the hotel id.
 
-                    #self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
-                    # in the line above a dictionary is created where the key is hotel name and the value is an hotel
-                    # instance
-                    self._dict_of_hotels[hotel_object.retrieve_hotel_name()] = hotel_object.get_hotel_as_dict()
-                    # in the line above using a hotel class method named 'get_hotel_as_dict(), each iteration
-                    # a dict of specific hotel (with all the hotel's attributes) is added to the dict_of_hotels.
                     writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
                                      cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
                                      cfg.SCORE_TITLE: hotel_object.retrieve_score_title(),
@@ -189,28 +170,21 @@ class HotelsManager:
                                      cfg.BED_TYPE: hotel_object.retrieve_bed_type(),
                                      cfg.HOTEL_IMAGE: hotel_object.retrieve_image_url()})
 
-    def get_hotels_as_dict(self):
-        """returns a giant dict with all the hotels names as keys and hotel details as a nested dict"""
-        return self._dict_of_hotels
-
-    def hotels_number(self):
+    def get_hotels_number(self):
         """returns the amount of hotels that are available"""
-        return len(self._dict_of_hotels.keys())
+        df = pd.read_csv('hotels_details.csv')
+        return len(df.index)
 
     def get_hotels_names(self):
         """returns a list of all hotel names"""
-        return list(self._hotels_dict.keys())
+        df = pd.read_csv('hotels_details.csv')
+        return df['hotel name']
 
     def most_expensive(self):
         """returns the most expensive hotel for that search"""
-        price = 0
-        most_expensive = None
-        for item in self._hotels_dict.values():
-            if item.retrieve_price() > price:
-                price = item.retrieve_price()
-                most_expensive = item.retrieve_hotel_name()
-        return most_expensive, price
-
+        df = pd.read_csv('hotels_details.csv')
+        max_price = df['price'].max()
+        return (df[df['price'] == max_price]['hotel name'].item(), max_price)
 
 def main():
     manager = HotelsManager(scrape_requested_url.requested_url())
@@ -220,8 +194,9 @@ def main():
     for hotel in manager.get_hotels_names():
         print(hotel)
     print('**************')
-    print(f'The numbers of hotels that are available in your destination is {manager.hotels_number()}')
-
+    print(f'The numbers of hotels that are available in your destination is {manager.get_hotels_number()}')
+    print('***')
+    print(len(manager.get_hotels_names()))
 
 
 if __name__ == '__main__':
