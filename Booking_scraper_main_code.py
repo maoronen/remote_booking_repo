@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import get_urls_func
+import get_urls
 import scrape_requested_url
 import conf as cfg
 import csv
@@ -113,7 +113,7 @@ class HotelsManager:
         self._url = url
         self._hotels_dict = dict()
         self._dict_of_hotels = dict()
-        all_urls_list = get_urls_func.get_all_urls(self._url)
+        all_urls_list = get_urls.get_all_urls(self._url)
         with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [cfg.HOTEL_NAME, cfg.HOTEL_RATING, cfg.SCORE_TITLE, cfg.NUMBER_OF_REVIEWS,
                           cfg.PRICE, cfg.LOCATION, cfg.MEALS, cfg.ROOM_TYPE, cfg.BED_TYPE,
