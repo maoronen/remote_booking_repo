@@ -5,6 +5,8 @@ import scrape_requested_url
 import conf as cfg
 import csv
 import logging_file as log_f
+from mysql.connector import MySQLConnection, Error
+import mysql
 
 
 class HotelBlock:
@@ -79,9 +81,6 @@ class HotelBlock:
         """The type of room(str) priced at the hotel price"""
         try:
             container = self.hotel_html_item.find('div', class_='room_link')
-            print(container.text)
-            print('-------------------------')
-            # for room in container.find_all('span'):
             return container.text.strip()
         except Exception:
             log_f.logger.info("could not extract hotel's room type")
@@ -135,12 +134,48 @@ class HotelsManager:
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
+            id = 0
             for link in all_urls_list:
+                print(link)
+                print('*****')
+                print(len(all_urls_list))
+                print('&&&')
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
-                for item in soup.select(cfg.HOTEL_BLOCK):
+                #length = len(soup.select(cfg.HOTEL_BLOCK))
 
+                for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
+                    mydb = mysql.connector.connect(
+                        host="localhost",
+                        user="root",
+                        password="4817"
+                    )
+
+                    cur = mydb.cursor()
+                    cur.execute("USE booking_db")
+                    cur.execute(
+                        "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
+                        [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
+                    mydb.commit()
+
+                    cur.execute(
+                        "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
+                        [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
+                         hotel_object.retrieve_meals()])
+                    mydb.commit()
+
+                    cur.execute(
+                        "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
+                        [id, hotel_object.retrieve_hotel_location()])
+                    mydb.commit()
+
+                    cur.execute(
+                        "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
+                        [id, hotel_object.retrieve_image_url()])
+                    mydb.commit()
+
+                    id += 1  # Progressing the hotel id.
 
                     self._hotels_dict[hotel_object.retrieve_hotel_name()] = hotel_object
                     # in the line above a dictionary is created where the key is hotel name and the value is an hotel
@@ -165,7 +200,7 @@ class HotelsManager:
 
     def hotels_number(self):
         """returns the amount of hotels that are available"""
-        return len(self._hotels_dict.keys())
+        return len(self._dict_of_hotels.keys())
 
     def get_hotels_names(self):
         """returns a list of all hotel names"""
