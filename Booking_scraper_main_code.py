@@ -22,7 +22,7 @@ class HotelBlock:
     def retrieve_hotel_name(self):
         """returns the hotel name"""
         try:
-            return self.hotel_html_item.select(cfg.HOTEL_NAME_SCRAPER)[cfg.TEXT].get_text().split('\n')[1]
+            return self.hotel_html_item.select(cfg.config['HOTEL_NAME_SCRAPER'])[cfg.config['TEXT']].get_text().split('\n')[1]
         except IndexError:
             log_f.logging.info("could not extract hotel's rating")
             return None
@@ -30,7 +30,7 @@ class HotelBlock:
     def retrieve_hotel_rating(self):
         """returns the rating of the hotel as a float between 0-10"""
         try:
-            return float(self.hotel_html_item.select(cfg.HOTEL_RATING_SCRAPER)[cfg.TEXT].get_text().strip())
+            return float(self.hotel_html_item.select(cfg.config['HOTEL_RATING_SCRAPER'])[cfg.config['TEXT']].get_text().strip())
         except IndexError:
             log_f.logging.info("could not extract hotel's rating")
             return None
@@ -38,7 +38,7 @@ class HotelBlock:
     def retrieve_score_title(self):
         """returns the rating of the hotel as a str"""
         try:
-            return self.hotel_html_item.select(cfg.SCORE_TITLE_SCRAPER)[cfg.TEXT].get_text().strip()
+            return self.hotel_html_item.select(cfg.config['SCORE_TITLE_SCRAPER'])[cfg.config['TEXT']].get_text().strip()
         except IndexError:
             log_f.logger.info("could not extract hotel's score title")
             return None
@@ -46,7 +46,7 @@ class HotelBlock:
     def retrieve_reviews_num(self):
         """returns the total number of reviews the hotel received"""
         try:
-            return int(self.hotel_html_item.select(cfg.TOTAL_REVIEWS_SCRAPER)[cfg.TEXT].get_text().strip().split()[0].replace(",", ""))
+            return int(self.hotel_html_item.select(cfg.config['TOTAL_REVIEWS_SCRAPER'])[cfg.config['TEXT']].get_text().strip().split()[0].replace(",", ""))
         except IndexError:
             log_f.logger.info("could not extract hotel's reviews number")
             return None
@@ -215,7 +215,6 @@ class HotelsManager:
 
 
 def main():
-    print
     requested_link = scrape_requested_url.requested_url()
     manager = HotelsManager(requested_link)
     print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
