@@ -81,7 +81,3 @@ def requested_url():
     args = args_parse()
     requested_url = url_for_parsing(args.destination, args.checkin, args.checkout, args.adults, args.children, args.rooms)
     return requested_url
-
-
-
-print(requested_url())

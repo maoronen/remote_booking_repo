@@ -25,7 +25,7 @@ class HotelBlock:
         try:
             return self.hotel_html_item.select(cfg.HOTEL_NAME_SCRAPER)[cfg.TEXT].get_text().split('\n')[1]
         except IndexError:
-            log_f.logging.info("could not extract hotel's rating")
+            log_f.logger.info("could not extract hotel's rating")
             return None
 
     def retrieve_hotel_rating(self):
@@ -33,7 +33,7 @@ class HotelBlock:
         try:
             return float(self.hotel_html_item.select(cfg.HOTEL_RATING_SCRAPER)[cfg.TEXT].get_text().strip())
         except IndexError:
-            log_f.logging.info("could not extract hotel's rating")
+            log_f.logger.info("could not extract hotel's rating")
             return None
 
     def retrieve_score_title(self):
@@ -57,7 +57,7 @@ class HotelBlock:
         try:
             return self.hotel_html_item.select('.bui-link')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].strip()
         except Exception:
-            log_f.logging.info("could not extract hotel's location")
+            log_f.logger.info("could not extract hotel's location")
             return None
 
     def retrieve_meals(self):
@@ -100,7 +100,7 @@ class HotelBlock:
         try:
             return self.hotel_html_item.select(cfg.HOTEL_IMAGE_SCRAPER)[cfg.TEXT]['data-highres']
         except Exception:
-            log_f.logging.info("could not extract hotel's image url")
+            log_f.logger.info("could not extract hotel's image url")
             return None
 
 
@@ -108,6 +108,7 @@ class HotelsManager:
     """The class collects all the hotels in the url and creates an object to each hotel.
         attribute:
         'url': str. Booking link according to user requirements """
+    DB_NAME = 'booking_db'
 
     def __init__(self, url):
         self._url = url
@@ -128,34 +129,54 @@ class HotelsManager:
 
                 for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
-                    mydb = mysql.connector.connect(
-                        host="localhost",
-                        user="root",
-                        password="4817"
-                    )
+                    try:
+                        mydb = mysql.connector.connect(
+                            host="localhost",
+                            user="root",
+                            password="4817"
+                        )
+                    except Exception as e:
+                        log_f.logger.error("Error while connecting to MySQL", e)
 
-                    cur = mydb.cursor()
-                    cur.execute("USE booking_db")
-                    cur.execute(
-                        "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
-                        [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
-                    mydb.commit()
+                    try:
+                        cur = mydb.cursor()
+                        cur.execute(f"USE {HotelsManager.DB_NAME}")
+                        cur.execute(
+                            "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
+                            [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into hotels table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into hotels table {}".format(e))
 
-                    cur.execute(
-                        "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
-                        [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
-                         hotel_object.retrieve_meals()])
-                    mydb.commit()
 
-                    cur.execute(
-                        "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
-                        [id, hotel_object.retrieve_hotel_location()])
-                    mydb.commit()
+                    try:
+                        cur.execute(
+                            "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
+                            [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
+                             hotel_object.retrieve_meals()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into facilities table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into facilities table {}".format(e))
 
-                    cur.execute(
-                        "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
-                        [id, hotel_object.retrieve_image_url()])
-                    mydb.commit()
+                    try:
+                        cur.execute(
+                            "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
+                            [id, hotel_object.retrieve_hotel_location()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into locations table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into locations table {}".format(e))
+
+                    try:
+                        cur.execute(
+                            "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
+                            [id, hotel_object.retrieve_image_url()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into hotel_image table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into hotel_image table {}".format(e))
 
                     id += 1  # Progressing the hotel id.
 
