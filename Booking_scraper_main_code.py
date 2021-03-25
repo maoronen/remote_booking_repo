@@ -15,6 +15,7 @@ import json
 with open('conf.json') as config_file:
     constants = json.load(config_file)
 
+
 class HotelBlock:
     """The class represent a hotel object.
         attributes:
@@ -99,7 +100,6 @@ class HotelBlock:
         except Exception:
             return None
 
-
     def retrieve_image_url(self):
         """returns URL for the hotel image or hotel area"""
         try:
@@ -114,11 +114,8 @@ class HotelsManager:
         attribute:
         'url': str. Booking link according to user requirements """
 
-
     def __init__(self, url):
         self._url = url
-        self._hotels_dict = dict()
-        self._dict_of_hotels = dict()
         all_urls_list = get_urls.get_all_urls(self._url)
         with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [cfg.HOTEL_NAME, cfg.HOTEL_RATING, cfg.SCORE_TITLE, cfg.NUMBER_OF_REVIEWS,
@@ -127,7 +124,7 @@ class HotelsManager:
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
-            id = 0
+            id_counter = 0
             args = sru.args_parse() # in order to extract host, user, password and db_name
             for link in all_urls_list:
                 link = requests.get(link, headers=cfg.HEADERS)
@@ -135,55 +132,56 @@ class HotelsManager:
 
                 for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
-                    mydb = mysql.connector.connect(
-                        host=args.host,
-                        user=args.user,
-                        password=args.password
-                    )
+                    try:
+                        mydb = mysql.connector.connect(
+                            host=args.host,
+                            user=args.user,
+                            password=args.password
+                        )
+                    except Error as e:
+                        log_f.logger.critical("Error while connecting to MySQL", e)
 
                     try:
-
                         db_name = args.db_name
                         cur = mydb.cursor()
                         cur.execute(f"USE {db_name}")
                         cur.execute(
                             "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
-                            [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
+                            [id_counter, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
                     except Exception as e:
-                        log_f.logger.error("Failed to insert record into hotels table {}".format(e))
-
+                        log_f.logger.warning("Failed to insert record into hotels table {}".format(e))
 
                     try:
                         cur.execute(
                             "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
-                            [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
+                            [id_counter, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
                              hotel_object.retrieve_meals()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into facilities table")
                     except Exception as e:
-                        log_f.logger.error("Failed to insert record into facilities table {}".format(e))
+                        log_f.logger.warning("Failed to insert record into facilities table {}".format(e))
 
                     try:
                         cur.execute(
                             "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
-                            [id, hotel_object.retrieve_hotel_location()])
+                            [id_counter, hotel_object.retrieve_hotel_location()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into locations table")
                     except Exception as e:
-                        log_f.logger.error("Failed to insert record into locations table {}".format(e))
+                        log_f.logger.warning("Failed to insert record into locations table {}".format(e))
 
                     try:
                         cur.execute(
                             "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
-                            [id, hotel_object.retrieve_image_url()])
+                            [id_counter, hotel_object.retrieve_image_url()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotel_image table")
                     except Exception as e:
-                        log_f.logger.error("Failed to insert record into hotel_image table {}".format(e))
+                        log_f.logger.warning("Failed to insert record into hotel_image table {}".format(e))
 
-                    id += 1  # Progressing the hotel id.
+                    id_counter += 1  # Progressing the hotel id.
 
                     writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
                                      cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
@@ -210,7 +208,8 @@ class HotelsManager:
         """returns the most expensive hotel for that search"""
         df = pd.read_csv('hotels_details.csv')
         max_price = df['price'].max()
-        return (df[df['price'] == max_price]['hotel name'].item(), max_price)
+        return df[df['price'] == max_price]['hotel name'].item(), max_price
+
 
 def main():
     args = sru.args_parse()

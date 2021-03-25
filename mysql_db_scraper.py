@@ -14,8 +14,8 @@ def create_db(host, user, password, db_name):
         log_f.logger.info("Connected to MySQL")
 
     except Error as e:
-        print("Error while connecting to MySQL", e)
-        sys.exit(1)
+        log_f.logger.critical("Error while connecting to MySQL", e)
+        #sys.exit(1)
 
 
     try:
@@ -25,8 +25,8 @@ def create_db(host, user, password, db_name):
         log_f.logger.info("Created")
 
     except Exception as e:
-        log_f.logger.error("Failed creating database: {}, \nPlease run again with different name".format(e))
-        sys.exit(1)
+        log_f.logger.error("Failed creating database: {}, \nOnly a CSV file will be created."
+                           " for database creation please run again with different database name".format(e))
 
     try:
         cur.execute(f"USE {db_name}")
