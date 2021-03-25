@@ -7,6 +7,7 @@
     "PRICE": ".bui-price-display__value",
     "SCORE_TITLE": ".bui-review-score__title",
     "TOTAL_REVIEWS": ".bui-review-score__text",
+    "BED": ".c-beds-configuration",
     "HOTEL_BLOCK": ".sr_property_block"
   },
   "HOTEL_DETAILS": {

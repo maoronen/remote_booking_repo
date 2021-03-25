@@ -53,7 +53,7 @@ class HotelBlock:
     def retrieve_reviews_num(self):
         """returns the total number of reviews the hotel received"""
         try:
-            return int(self.hotel_html_item.select(cfg.TOTAL_REVIEWS_SCRAPER)[cfg.TEXT].get_text().strip().split()[0].replace(",", ""))
+            return int(self.hotel_html_item.select(constants["SCRAPER"]["TOTAL_REVIEWS"])[constants["NUMBERS"]["TEXT"]].get_text().strip().split()[0].replace(",", ""))
         except IndexError:
             log_f.logger.info("could not extract hotel's reviews number")
             return None
@@ -61,7 +61,7 @@ class HotelBlock:
     def retrieve_hotel_location(self):
         """returns area / city or island where the hotel is located"""
         try:
-            return self.hotel_html_item.select('.bui-link')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].strip()
+            return self.hotel_html_item.select('.bui-link')[constants["NUMBERS"]["TEXT"]].get_text().split('\n')[constants["NUMBERS"]["NO_SPACE"]].strip()
         except Exception:
             log_f.logger.info("could not extract hotel's location")
             return None
@@ -69,15 +69,15 @@ class HotelBlock:
     def retrieve_meals(self):
         """returns which meals (if any) are included in the hotel price"""
         try:
-            return self.hotel_html_item.select(cfg.MEALS_SCRAPER)[cfg.TEXT].get_text().strip()
+            return self.hotel_html_item.select(constants["SCRAPER"]["MEALS"])[constants["NUMBERS"]["TEXT"]].get_text().strip()
         except Exception:
             return None
 
     def retrieve_price(self):
         """returns the price as a int of the hotel for the entire requested period"""
         try:
-            price = self.hotel_html_item.select(cfg.PRICE_SCRAPER)[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].split()[
-                cfg.DIGIT]
+            price = self.hotel_html_item.select(constants["SCRAPER"]["PRICE"])[constants["NUMBERS"]["TEXT"]].get_text().split('\n')[constants["NUMBERS"]["NO_SPACE"]].split()[
+                constants["NUMBERS"]["DIGIT"]]
             price = int(price.replace(",", ""))
         except Exception:
             log_f.logger.info("could not extract hotel's price")
@@ -96,14 +96,14 @@ class HotelBlock:
     def retrieve_bed_type(self):
         """returns the bed type/s at the hotel room"""
         try:
-            return self.hotel_html_item.select('.c-beds-configuration')[0].get_text().strip()
+            return self.hotel_html_item.select(constants["SCRAPER"]["BED"])[0].get_text().strip()
         except Exception:
             return None
 
     def retrieve_image_url(self):
         """returns URL for the hotel image or hotel area"""
         try:
-            return self.hotel_html_item.select(cfg.HOTEL_IMAGE_SCRAPER)[cfg.TEXT]['data-highres']
+            return self.hotel_html_item.select(constants["SCRAPER"]["HOTEL_IMAGE"])[constants["NUMBERS"]["TEXT"]]['data-highres']
         except Exception:
             log_f.logger.info("could not extract hotel's image url")
             return None
@@ -118,19 +118,26 @@ class HotelsManager:
         self._url = url
         all_urls_list = get_urls.get_all_urls(self._url)
         with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
-            fieldnames = [cfg.HOTEL_NAME, cfg.HOTEL_RATING, cfg.SCORE_TITLE, cfg.NUMBER_OF_REVIEWS,
-                          cfg.PRICE, cfg.LOCATION, cfg.MEALS, cfg.ROOM_TYPE, cfg.BED_TYPE,
-                          cfg.HOTEL_IMAGE]
+            fieldnames = [constants["HOTEL_DETAILS"]["HOTEL_NAME"],
+                          constants["HOTEL_DETAILS"]["HOTEL_RATING"],
+                          constants["HOTEL_DETAILS"]["SCORE_TITLE"],
+                          constants["HOTEL_DETAILS"]["NUMBER_OF_REVIEWS"],
+                          constants["HOTEL_DETAILS"]["PRICE"],
+                          constants["HOTEL_DETAILS"]["LOCATION"],
+                          constants["HOTEL_DETAILS"]["MEALS"],
+                          constants["HOTEL_DETAILS"]["ROOM_TYPE"],
+                          constants["HOTEL_DETAILS"]["BED_TYPE"],
+                          constants["HOTEL_DETAILS"]["HOTEL_IMAGE"]]
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
             id_counter = 0
             args = sru.args_parse() # in order to extract host, user, password and db_name
             for link in all_urls_list:
-                link = requests.get(link, headers=cfg.HEADERS)
+                link = requests.get(link, headers=constants["URLS"]["HEADERS"])
                 soup = BeautifulSoup(link.content, "html.parser")
 
-                for item in soup.select(cfg.HOTEL_BLOCK):
+                for item in soup.select(constants["SCRAPER"]["HOTEL_BLOCK"]):
                     hotel_object = HotelBlock(item)
                     try:
                         mydb = mysql.connector.connect(
@@ -183,16 +190,16 @@ class HotelsManager:
 
                     id_counter += 1  # Progressing the hotel id.
 
-                    writer.writerow({cfg.HOTEL_NAME: hotel_object.retrieve_hotel_name(),
-                                     cfg.HOTEL_RATING: hotel_object.retrieve_hotel_rating(),
-                                     cfg.SCORE_TITLE: hotel_object.retrieve_score_title(),
-                                     cfg.NUMBER_OF_REVIEWS: hotel_object.retrieve_reviews_num(),
-                                     cfg.PRICE: hotel_object.retrieve_price(),
-                                     cfg.LOCATION: hotel_object.retrieve_hotel_location(),
-                                     cfg.MEALS: hotel_object.retrieve_meals(),
-                                     cfg.ROOM_TYPE: hotel_object.retrieve_room_type(),
-                                     cfg.BED_TYPE: hotel_object.retrieve_bed_type(),
-                                     cfg.HOTEL_IMAGE: hotel_object.retrieve_image_url()})
+                    writer.writerow({constants["HOTEL_DETAILS"]["HOTEL_NAME"]: hotel_object.retrieve_hotel_name(),
+                                     constants["HOTEL_DETAILS"]["HOTEL_RATING"]: hotel_object.retrieve_hotel_rating(),
+                                     constants["HOTEL_DETAILS"]["SCORE_TITLE"]: hotel_object.retrieve_score_title(),
+                                     constants["HOTEL_DETAILS"]["NUMBER_OF_REVIEWS"]: hotel_object.retrieve_reviews_num(),
+                                     constants["HOTEL_DETAILS"]["PRICE"]: hotel_object.retrieve_price(),
+                                     constants["HOTEL_DETAILS"]["LOCATION"]: hotel_object.retrieve_hotel_location(),
+                                     constants["HOTEL_DETAILS"]["MEALS"]: hotel_object.retrieve_meals(),
+                                     constants["HOTEL_DETAILS"]["ROOM_TYPE"]: hotel_object.retrieve_room_type(),
+                                     constants["HOTEL_DETAILS"]["BED_TYPE"]: hotel_object.retrieve_bed_type(),
+                                     constants["HOTEL_DETAILS"]["HOTEL_IMAGE"]: hotel_object.retrieve_image_url()})
 
     def get_hotels_number(self):
         """returns the amount of hotels that are available"""
@@ -213,11 +220,10 @@ class HotelsManager:
 
 def main():
     args = sru.args_parse()
-    print(args.host, args.db_name, args.password)
     mysql_db_scraper.create_db(args.host, args.user, args.password, args.db_name)
     manager = HotelsManager(sru.requested_url())
-    print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
-          f'its price is {manager.most_expensive()[cfg.INDEX_PRICE_TUPLE]} NIS')
+    print(f'The most expensive hotel is {manager.most_expensive()[constants["NUMBERS"]["INDEX_HOTEL_TUPLE"]]}, '
+          f'its price is {manager.most_expensive()[constants["NUMBERS"]["INDEX_PRICE_TUPLE"]]} NIS')
     print('**************')
     for hotel in manager.get_hotels_names():
         print(hotel)
