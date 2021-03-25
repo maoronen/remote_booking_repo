@@ -8,7 +8,11 @@ import logging_file as log_f
 from mysql.connector import MySQLConnection, Error
 import mysql
 import pandas as pd
+import json
 
+# importing the constant variables from conf.json
+with open('conf.json') as config_file:
+    data = json.load(config_file)
 
 class HotelBlock:
     """The class represent a hotel object.
@@ -23,7 +27,7 @@ class HotelBlock:
     def retrieve_hotel_name(self):
         """returns the hotel name"""
         try:
-            return self.hotel_html_item.select(cfg.HOTEL_NAME_SCRAPER)[cfg.TEXT].get_text().split('\n')[1]
+            return self.hotel_html_item.select(data["SCRAPER"]["HOTEL_NAME"])[cfg.TEXT].get_text().split('\n')[1]
         except IndexError:
             log_f.logging.info("could not extract hotel's rating")
             return None
