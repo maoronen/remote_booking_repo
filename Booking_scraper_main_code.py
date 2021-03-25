@@ -1,18 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
 import get_urls
-import scrape_requested_url
+import scrape_requested_url as sru
 import conf as cfg
 import csv
 import logging_file as log_f
 from mysql.connector import MySQLConnection, Error
+import mysql_db_scraper
 import mysql
 import pandas as pd
 import json
 
 # importing the constant variables from conf.json
 with open('conf.json') as config_file:
-    data = json.load(config_file)
+    constants = json.load(config_file)
 
 class HotelBlock:
     """The class represent a hotel object.
@@ -27,23 +28,23 @@ class HotelBlock:
     def retrieve_hotel_name(self):
         """returns the hotel name"""
         try:
-            return self.hotel_html_item.select(data["SCRAPER"]["HOTEL_NAME"])[cfg.TEXT].get_text().split('\n')[1]
+            return self.hotel_html_item.select(constants["SCRAPER"]["HOTEL_NAME"])[constants["NUMBERS"]["TEXT"]].get_text().split('\n')[1]
         except IndexError:
-            log_f.logging.info("could not extract hotel's rating")
+            log_f.logger.info("could not extract hotel's rating")
             return None
 
     def retrieve_hotel_rating(self):
         """returns the rating of the hotel as a float between 0-10"""
         try:
-            return float(self.hotel_html_item.select(cfg.HOTEL_RATING_SCRAPER)[cfg.TEXT].get_text().strip())
+            return float(self.hotel_html_item.select(constants["SCRAPER"]["HOTEL_RATING"])[constants["NUMBERS"]["TEXT"]].get_text().strip())
         except IndexError:
-            log_f.logging.info("could not extract hotel's rating")
+            log_f.logger.info("could not extract hotel's rating")
             return None
 
     def retrieve_score_title(self):
         """returns the rating of the hotel as a str"""
         try:
-            return self.hotel_html_item.select(cfg.SCORE_TITLE_SCRAPER)[cfg.TEXT].get_text().strip()
+            return self.hotel_html_item.select(constants["SCRAPER"]["SCORE_TITLE"])[constants["NUMBERS"]["TEXT"]].get_text().strip()
         except IndexError:
             log_f.logger.info("could not extract hotel's score title")
             return None
@@ -61,7 +62,7 @@ class HotelBlock:
         try:
             return self.hotel_html_item.select('.bui-link')[cfg.TEXT].get_text().split('\n')[cfg.NO_SPACE].strip()
         except Exception:
-            log_f.logging.info("could not extract hotel's location")
+            log_f.logger.info("could not extract hotel's location")
             return None
 
     def retrieve_meals(self):
@@ -104,7 +105,7 @@ class HotelBlock:
         try:
             return self.hotel_html_item.select(cfg.HOTEL_IMAGE_SCRAPER)[cfg.TEXT]['data-highres']
         except Exception:
-            log_f.logging.info("could not extract hotel's image url")
+            log_f.logger.info("could not extract hotel's image url")
             return None
 
 
@@ -112,6 +113,7 @@ class HotelsManager:
     """The class collects all the hotels in the url and creates an object to each hotel.
         attribute:
         'url': str. Booking link according to user requirements """
+
 
     def __init__(self, url):
         self._url = url
@@ -126,6 +128,7 @@ class HotelsManager:
             writer.writeheader()
 
             id = 0
+            args = sru.args_parse() # in order to extract host, user, password and db_name
             for link in all_urls_list:
                 link = requests.get(link, headers=cfg.HEADERS)
                 soup = BeautifulSoup(link.content, "html.parser")
@@ -133,33 +136,52 @@ class HotelsManager:
                 for item in soup.select(cfg.HOTEL_BLOCK):
                     hotel_object = HotelBlock(item)
                     mydb = mysql.connector.connect(
-                        host="localhost",
-                        user="root",
-                        password="root"
+                        host=args.host,
+                        user=args.user,
+                        password=args.password
                     )
 
-                    cur = mydb.cursor()
-                    cur.execute("USE booking_db")
-                    cur.execute(
-                        "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
-                        [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
-                    mydb.commit()
+                    try:
 
-                    cur.execute(
-                        "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
-                        [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
-                         hotel_object.retrieve_meals()])
-                    mydb.commit()
+                        db_name = args.db_name
+                        cur = mydb.cursor()
+                        cur.execute(f"USE {db_name}")
+                        cur.execute(
+                            "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
+                            [id, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into hotels table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into hotels table {}".format(e))
 
-                    cur.execute(
-                        "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
-                        [id, hotel_object.retrieve_hotel_location()])
-                    mydb.commit()
 
-                    cur.execute(
-                        "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
-                        [id, hotel_object.retrieve_image_url()])
-                    mydb.commit()
+                    try:
+                        cur.execute(
+                            "INSERT INTO facilities (hotel_id, room_type, bed_type, meals) VALUES (%s, %s, %s, %s)",
+                            [id, hotel_object.retrieve_room_type(), hotel_object.retrieve_bed_type(),
+                             hotel_object.retrieve_meals()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into facilities table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into facilities table {}".format(e))
+
+                    try:
+                        cur.execute(
+                            "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
+                            [id, hotel_object.retrieve_hotel_location()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into locations table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into locations table {}".format(e))
+
+                    try:
+                        cur.execute(
+                            "INSERT INTO hotel_image (hotel_id, image_url) VALUES (%s, %s)",
+                            [id, hotel_object.retrieve_image_url()])
+                        mydb.commit()
+                        log_f.logger.info("Record inserted successfully into hotel_image table")
+                    except Exception as e:
+                        log_f.logger.error("Failed to insert record into hotel_image table {}".format(e))
 
                     id += 1  # Progressing the hotel id.
 
@@ -191,7 +213,10 @@ class HotelsManager:
         return (df[df['price'] == max_price]['hotel name'].item(), max_price)
 
 def main():
-    manager = HotelsManager(scrape_requested_url.requested_url())
+    args = sru.args_parse()
+    print(args.host, args.db_name, args.password)
+    mysql_db_scraper.create_db(args.host, args.user, args.password, args.db_name)
+    manager = HotelsManager(sru.requested_url())
     print(f'The most expensive hotel is {manager.most_expensive()[cfg.INDEX_HOTEL_TUPLE]}, '
           f'its price is {manager.most_expensive()[cfg.INDEX_PRICE_TUPLE]} NIS')
     print('**************')

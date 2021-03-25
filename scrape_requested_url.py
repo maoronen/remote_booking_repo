@@ -63,13 +63,18 @@ def valid_date(d):
 
 def args_parse():
     parser = argparse.ArgumentParser(description='hotels filter')
-
+    parser.add_argument('db_name', help="database name", type=str)
     parser.add_argument('destination', help='destination', type=str)
     parser.add_argument('checkin', help='date in ISO format', type=valid_date)
     parser.add_argument('checkout', help='date in ISO format', type=valid_date)
     parser.add_argument('--adults', help='number of adults', type=int, default=2)
     parser.add_argument('--children', help="number of children", default=0)
     parser.add_argument('--rooms', help='number of rooms', type=int, default=1)
+
+    parser.add_argument('--host', help="mysql host", type=str, default="localhost")
+    parser.add_argument('--user', help="mysql user", type=str, default="root")
+    parser.add_argument('--password', help="mysql password", type=str, default="root")
+
 
     args = parser.parse_args()
     if args.checkin > args.checkout:
@@ -81,7 +86,3 @@ def requested_url():
     args = args_parse()
     requested_url = url_for_parsing(args.destination, args.checkin, args.checkout, args.adults, args.children, args.rooms)
     return requested_url
-
-
-
-print(requested_url())
