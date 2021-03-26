@@ -39,7 +39,7 @@ The scripts accepts several arguments from the user for proper usage:
  1. A csv file and contain the hotel name, its rating, price,
  location, what meals are included, room details and a representative image of the listing.
  Here is an example of an output CSV file:
- ![](images\csv_snapshot.PNG)
+ ![](images//csv_snapshot.PNG)
   2. A database named by the user (see paragraph above)
  The database contains four tables:
  a. Hotels - contains details regarding the hotel: name, rating, number of reviews and price.
@@ -49,8 +49,8 @@ The scripts accepts several arguments from the user for proper usage:
  Please note that if the user chose a database name that already exists, the user will be notified
  and only a CSV file will be output. The user can run the script again with another database name 
  to receive also a database.
- Here is an example of an output CSV file:
- ![](images\DB_tables.PNG)
+ Here is an example of the created database tables:
+ ![](images//DB_tables.PNG)
  
  ## Content of the repository
  1. Booking_scraper_main_code.py - main code file 

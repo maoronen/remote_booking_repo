@@ -9,6 +9,7 @@ import mysql_db_scraper
 import mysql
 import pandas as pd
 import json
+import argparse_scraping as arg_src
 
 # importing the constant variables from conf.json
 with open('conf.json') as config_file:
@@ -131,7 +132,7 @@ class HotelsManager:
             writer.writeheader()
 
             id_counter = 0
-            args = sru.args_parse() # in order to extract host, user, password and db_name
+            args = arg_src.args_parse() # in order to extract host, user, password and db_name
             for link in all_urls_list:
                 link = requests.get(link, headers=constants["URLS"]["HEADERS"])
                 soup = BeautifulSoup(link.content, "html.parser")
@@ -218,7 +219,7 @@ class HotelsManager:
 
 
 def main():
-    args = sru.args_parse()
+    args = arg_src.args_parse()
     mysql_db_scraper.create_db(args.host, args.user, args.password, args.db_name)
     manager = HotelsManager(sru.requested_url())
     print(f'The most expensive hotel is {manager.most_expensive()[constants["NUMBERS"]["INDEX_HOTEL_TUPLE"]]}, '
