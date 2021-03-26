@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import get_urls
 import scrape_requested_url as sru
-import conf as cfg
 import csv
 import logging_file as log_f
 from mysql.connector import MySQLConnection, Error
