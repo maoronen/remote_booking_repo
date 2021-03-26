@@ -21,8 +21,7 @@ def create_db(host, user, password, db_name):
     try:
         cur = mydb.cursor()
         cur.execute(f"CREATE DATABASE {db_name}")
-        print("Database {} created successfully.".format(db_name))
-        log_f.logger.info("Created")
+        log_f.logger.info("Database {} created successfully.".format(db_name))
 
     except Exception as e:
         log_f.logger.error("Failed creating database: {}, \nOnly a CSV file will be created."
@@ -38,7 +37,7 @@ def create_db(host, user, password, db_name):
                         name VARCHAR(255),
                         rating FLOAT,
                         reviews INT,
-                        price FLOAT);""")
+                        price_ILS FLOAT);""")
         log_f.logger.info("hotels table created successfully.")
     except Exception as e:
         log_f.logger.error('Failed creating hotels table')
