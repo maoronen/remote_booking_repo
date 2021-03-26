@@ -11,16 +11,17 @@
     "HOTEL_BLOCK": ".sr_property_block"
   },
   "HOTEL_DETAILS": {
-    "HOTEL_NAME": "hotel name",
-    "HOTEL_RATING": "hotel rating",
-    "SCORE_TITLE": "score title",
-    "NUMBER_OF_REVIEWS": "num of reviews",
-    "PRICE": "price",
-    "LOCATION": "location",
-    "MEALS": "meals",
-    "ROOM_TYPE": "room type",
-    "BED_TYPE": "bed type",
-    "HOTEL_IMAGE": "image url"
+    "CSV_FILE_NAME": "hotel_details.csv",
+    "HOTEL_NAME": "Hotel name",
+    "HOTEL_RATING": "Hotel rating",
+    "SCORE_TITLE": "Score title",
+    "NUMBER_OF_REVIEWS": "Number of reviews",
+    "PRICE": "Price (ILS)",
+    "LOCATION": "Location",
+    "MEALS": "Meals",
+    "ROOM_TYPE": "Room type",
+    "BED_TYPE": "Bed type",
+    "HOTEL_IMAGE": "Image url"
   },
   "NUMBERS": {
     "INDEX_HOTEL_TUPLE": 0,

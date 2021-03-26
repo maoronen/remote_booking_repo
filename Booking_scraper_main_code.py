@@ -117,7 +117,7 @@ class HotelsManager:
     def __init__(self, url):
         self._url = url
         all_urls_list = get_urls.get_all_urls(self._url)
-        with open("hotels_details.csv", "w", encoding='utf-8', newline="") as booking_file:
+        with open(constants["HOTEL_DETAILS"]["CSV_FILE_NAME"], "w", encoding='utf-8', newline="") as booking_file:
             fieldnames = [constants["HOTEL_DETAILS"]["HOTEL_NAME"],
                           constants["HOTEL_DETAILS"]["HOTEL_RATING"],
                           constants["HOTEL_DETAILS"]["SCORE_TITLE"],
@@ -153,7 +153,7 @@ class HotelsManager:
                         cur = mydb.cursor()
                         cur.execute(f"USE {db_name}")
                         cur.execute(
-                            "INSERT INTO hotels (id, name, rating, reviews, price) VALUES (%s, %s, %s, %s, %s)",
+                            "INSERT INTO hotels (id, name, rating, reviews, price_ILS) VALUES (%s, %s, %s, %s, %s)",
                             [id_counter, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
@@ -203,19 +203,19 @@ class HotelsManager:
 
     def get_hotels_number(self):
         """returns the amount of hotels that are available"""
-        df = pd.read_csv('hotels_details.csv')
+        df = pd.read_csv(constants["HOTEL_DETAILS"]["CSV_FILE_NAME"])
         return len(df.index)
 
     def get_hotels_names(self):
         """returns a list of all hotel names"""
-        df = pd.read_csv('hotels_details.csv')
-        return df['hotel name']
+        df = pd.read_csv(constants["HOTEL_DETAILS"]["CSV_FILE_NAME"])
+        return df[constants["HOTEL_DETAILS"]["HOTEL_NAME"]]
 
     def most_expensive(self):
         """returns the most expensive hotel for that search"""
-        df = pd.read_csv('hotels_details.csv')
-        max_price = df['price'].max()
-        return df[df['price'] == max_price]['hotel name'].item(), max_price
+        df = pd.read_csv(constants["HOTEL_DETAILS"]["CSV_FILE_NAME"])
+        max_price = df[constants["HOTEL_DETAILS"]["PRICE"]].max()
+        return df[df[constants["HOTEL_DETAILS"]["PRICE"]] == max_price][constants["HOTEL_DETAILS"]["HOTEL_NAME"]].item(), max_price
 
 
 def main():
@@ -229,8 +229,6 @@ def main():
         print(hotel)
     print('**************')
     print(f'The numbers of hotels that are available in your destination is {manager.get_hotels_number()}')
-    print('***')
-    print(len(manager.get_hotels_names()))
 
 
 if __name__ == '__main__':

@@ -2,7 +2,6 @@ import re
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
-from datetime import date, timedelta
 import argparse_scraping as arg_scr
 
 url = "https://www.booking.com"
@@ -50,6 +49,7 @@ def url_for_parsing(destination, checkin, checkout, adults, children, rooms):
 
 
 def requested_url():
+    """returns a booking url according to the user configuration input"""
     args = arg_scr.args_parse()
     requested_url = url_for_parsing(args.destination, args.checkin, args.checkout, args.adults, args.children, args.rooms)
     return requested_url
