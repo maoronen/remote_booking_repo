@@ -2,12 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 import logging_file as log_f
-import conf as cfg
+import json
+
+# importing the constant variables from conf.json
+with open('conf.json') as config_file:
+    constants = json.load(config_file)
 
 
 def creating_soup(url):
     try:
-        url = requests.get(url, headers=cfg.HEADERS)
+        url = requests.get(url, headers=constants["URLS"]["HEADERS"])
     except requests.exceptions.SSLError:
         log_f.logger.critical('URL does not exist on internet!')
         sys.exit(1)
@@ -28,18 +32,14 @@ def get_next_url(page_url):
                 next_url = href_list[i + 1]['href']
     except IndexError:
         return None
-    next_url = cfg.BOOKING_COM + next_url
+    next_url = constants["URLS"]["BOOKING_COM"] + next_url
     log_f.logger.info(f'successfully extract next URL: {next_url}')
     return next_url
 
 
 def get_all_urls(first_url):
     """gets the first link and extract the next links that are apart of the hotels search"""
-    # try:  # test if the input is valid url
-    #     first_link = requests.get(first_url, headers=cfg.HEADERS)
-    # except requests.ConnectionError:
-    #     log_f.logger.critical('URL does not exist on internet!')
-    #     sys.exit(1)
+
     url_list = [first_url]
     next_url = first_url
     while True:
