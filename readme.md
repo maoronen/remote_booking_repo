@@ -1,6 +1,5 @@
 # Scraping Booking.com
-This repository contains various files regarding web-scraping Booking.com 
-for a one week vacation in August in exotic Seychelles.
+This repository contains various files regarding web-scraping Booking.com.
 
 ## Installation
 The program operates on any OS and uses python 3.8.3
@@ -19,15 +18,20 @@ The scripts accepts several arguments from the user for proper usage:
     1. Database name - The script will create a database in this name. if a database 
     with this name already exists, the script will continue to run and only a CSV file will be created 
     2. Destination - Where would like to travel? 
-    3. Check-in - starting date of your travel
-    4. Check-out - ending date of your travel
+    3. Check-in - starting date of your travel **(yyyy-mm-dd)**
+    4. Check-out - ending date of your travel (yyyy-mm-dd)
     Optional arguments:
     5. Number of adults - You can specify how many adults take part in the travel.  
     E.g: --adults 2 (2 adults participate in the travel)
+    **In case you would not specify any value, the default adults value will be 2**
     6. Number of children - You can specify how many children take part in the travel.  
     E.g: --children 2 (2 children participate in the travel)
-    7. Number of rooms - You can specify how many rooms you would like to reserve.  
+    **In case you would not specify any value, the default children value will be 0**
+    7. Number of rooms - You can specify how many rooms you would like to reserve.   
+    **The number of rooms cannot exceed the specified number of adults,  in which case one 
+    room will be taken into account**  
     E.g: --rooms 2 (2 rooms)
+    **In case you would not specify any value, the default rooms value will be 1**
     8. MySQL host - for connecting to MySQL. The default is "localhost".  
     E.g: if you would like to change host, please insert: --host "another_host" 
     9. MySQL user - username for MySQL. The default is "root".  
