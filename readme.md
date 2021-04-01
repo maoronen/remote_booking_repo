@@ -6,7 +6,7 @@ The program operates on any OS and uses python 3.8.3
 * Creating a virtual environment by running:
     pip install -r requirements.txt
 * Running Booking_scraper_main_code.py file:
-    for details and more specific instruction, please see Usage paragraph below.
+    for details and more specific instructions, please see the Usage paragraph below.
       
      
 ## Usage
@@ -14,12 +14,12 @@ The program operates on any OS and uses python 3.8.3
 The user chooses the destination, period of time and even can specify more search parameters to 
 hers or his convenience. 
 The scripts accepts several arguments from the user for proper usage:
-    Mandatory (positional) arguments
+    Mandatory (positional) arguments:
     1. Database name - The script will create a database in this name. if a database 
     with this name already exists, the script will continue to run and only a CSV file will be created 
     2. Destination - Where would like to travel? 
     3. Check-in - starting date of your travel **(yyyy-mm-dd)**
-    4. Check-out - ending date of your travel (yyyy-mm-dd)
+    4. Check-out - ending date of your travel **(yyyy-mm-dd)**  
     Optional arguments:
     5. Number of adults - You can specify how many adults take part in the travel.  
     E.g: --adults 2 (2 adults participate in the travel)
