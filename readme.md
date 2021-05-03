@@ -14,6 +14,7 @@ The program operates on any OS and uses python 3.8.3
 The user chooses the destination, period of time and even can specify more search parameters to 
 hers or his convenience. 
 The scripts accepts several arguments from the user for proper usage:
+    %%%python main-file.py parameter_1 parameter_2...
     Mandatory (positional) arguments:
     1. Database name - The script will create a database in this name. if a database 
     with this name already exists, the script will continue to run and only a CSV file will be created 

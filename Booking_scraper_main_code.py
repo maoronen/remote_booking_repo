@@ -132,6 +132,8 @@ class HotelsManager:
             writer.writeheader()
 
             id_counter = 0
+            id_loc_counter = 0
+            location_dict = {}
             args = arg_src.args_parse() # in order to extract host, user, password and db_name
             for link in all_urls_list:
                 link = requests.get(link, headers=constants["URLS"]["HEADERS"])
@@ -148,13 +150,19 @@ class HotelsManager:
                     except Error as e:
                         log_f.logger.critical("Error while connecting to MySQL", e)
 
+                    if hotel_object.retrieve_hotel_location() in location_dict:
+                        location_PK = location_dict[hotel_object.retrieve_hotel_location()]
+                    else:
+                        location_dict[hotel_object.retrieve_hotel_location()] = id_loc_counter
+                        location_PK = id_loc_counter
+                        id_loc_counter += 1
                     try:
                         db_name = args.db_name
                         cur = mydb.cursor()
                         cur.execute(f"USE {db_name}")
                         cur.execute(
-                            "INSERT INTO hotels (id, name, rating, reviews, price_ILS) VALUES (%s, %s, %s, %s, %s)",
-                            [id_counter, hotel_object.retrieve_hotel_name(), hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
+                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_ILS) VALUES (%s, %s, %s, %s, %s, %s)",
+                            [id_counter, hotel_object.retrieve_hotel_name(), location_PK, hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
                     except Exception as e:
@@ -170,10 +178,11 @@ class HotelsManager:
                     except Exception as e:
                         log_f.logger.warning("Failed to insert record into facilities table {}".format(e))
 
+
                     try:
                         cur.execute(
-                            "INSERT INTO locations (hotel_id, location) VALUES (%s, %s)",
-                            [id_counter, hotel_object.retrieve_hotel_location()])
+                            "INSERT INTO locations (id, location) VALUES (%s, %s)",
+                            [location_PK, hotel_object.retrieve_hotel_location()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into locations table")
                     except Exception as e:
