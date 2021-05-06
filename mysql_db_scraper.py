@@ -47,6 +47,8 @@ def create_db(host, user, password, db_name):
                         rating FLOAT,
                         reviews INT,
                         price_ILS FLOAT,
+                        timezone VARCHAR(255),
+                        current_temperature FLOAT,
                         FOREIGN KEY (location_id) REFERENCES locations (id));""")
         log_f.logger.info("hotels table created successfully.")
     except Exception as e:

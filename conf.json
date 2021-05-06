@@ -8,7 +8,8 @@
     "SCORE_TITLE": ".bui-review-score__title",
     "TOTAL_REVIEWS": ".bui-review-score__text",
     "BED": ".c-beds-configuration",
-    "HOTEL_BLOCK": ".sr_property_block"
+    "HOTEL_BLOCK": ".sr_property_block",
+    "COORDINATES": ".sr_card_address_line"
   },
   "HOTEL_DETAILS": {
     "CSV_FILE_NAME": "hotel_details.csv",
@@ -21,7 +22,9 @@
     "MEALS": "Meals",
     "ROOM_TYPE": "Room type",
     "BED_TYPE": "Bed type",
-    "HOTEL_IMAGE": "Image url"
+    "HOTEL_IMAGE": "Image url",
+    "TIMEZONE": "Time Zone",
+    "TEMPERATURE": "Temperature"
   },
   "NUMBERS": {
     "INDEX_HOTEL_TUPLE": 0,

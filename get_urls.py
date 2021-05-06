@@ -62,4 +62,14 @@ def last_page_number(page_url):
     last_page_num = soup.find_all('div', class_="bui-u-inline")
     return int(last_page_num[-1].text)
 
+def API_url(latitude, longitude):
+    API_url = f"https://api.weatherbit.io/v2.0/current?lat={latitude}&lon={longitude}&key=ccfc524cb238411c9e49897be51ead2e&include=minutely"
+    headers = {
+        'x-rapidapi-key': "b0e0e2263cmsha50e96d375ad81dp145af4jsn7c1765ced274",
+        'x-rapidapi-host': "weatherbit-v1-mashape.p.rapidapi.com"
+    }
+
+    response = requests.request("GET", API_url, headers=headers)
+    return response.json()
+
 
