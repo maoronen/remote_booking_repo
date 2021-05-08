@@ -107,7 +107,7 @@ class HotelBlock:
         except Exception:
             log_f.logger.info("could not extract hotel's image url")
             return None
-
+"""
     def get_coordinates(self):
         coor = self.hotel_html_item.select(constants["SCRAPER"]["COORDINATES"])[0]
         coor = str(coor).split("data-coords=")[1].split()[0]
@@ -125,7 +125,7 @@ class HotelBlock:
         my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
         temperature = my_dict['data'][0]['temp']
         return temperature
-
+"""
 
 class HotelsManager:
     """The class collects all the hotels in the url and creates an object to each hotel.
@@ -145,9 +145,7 @@ class HotelsManager:
                           constants["HOTEL_DETAILS"]["MEALS"],
                           constants["HOTEL_DETAILS"]["ROOM_TYPE"],
                           constants["HOTEL_DETAILS"]["BED_TYPE"],
-                          constants["HOTEL_DETAILS"]["HOTEL_IMAGE"],
-                          constants["HOTEL_DETAILS"]["TIMEZONE"],
-                          constants["HOTEL_DETAILS"]["TEMPERATURE"]]
+                          constants["HOTEL_DETAILS"]["HOTEL_IMAGE"]]
             writer = csv.DictWriter(booking_file, fieldnames=fieldnames)
             writer.writeheader()
 
@@ -191,8 +189,10 @@ class HotelsManager:
 
                     try:
                         cur.execute(
-                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_ILS, timezone, current_temperature) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                            [id_counter, hotel_object.retrieve_hotel_name(), location_PK, hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price(), hotel_object.get_timezone(), hotel_object.get_temperature()])
+                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_ILS) VALUES (%s, %s, %s, %s, %s, %s)",
+                            [id_counter, hotel_object.retrieve_hotel_name(), location_PK,
+                             hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(),
+                             hotel_object.retrieve_price()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
                     except Exception as e:
@@ -208,6 +208,8 @@ class HotelsManager:
                         log_f.logger.info("Record inserted successfully into facilities table")
                     except Exception as e:
                         log_f.logger.warning("Failed to insert record into facilities table {}".format(e))
+
+
 
                     try:
                         cur.execute(
@@ -229,9 +231,7 @@ class HotelsManager:
                                      constants["HOTEL_DETAILS"]["MEALS"]: hotel_object.retrieve_meals(),
                                      constants["HOTEL_DETAILS"]["ROOM_TYPE"]: hotel_object.retrieve_room_type(),
                                      constants["HOTEL_DETAILS"]["BED_TYPE"]: hotel_object.retrieve_bed_type(),
-                                     constants["HOTEL_DETAILS"]["HOTEL_IMAGE"]: hotel_object.retrieve_image_url(),
-                                     constants["HOTEL_DETAILS"]["TIMEZONE"]: hotel_object.get_timezone(),
-                                     constants["HOTEL_DETAILS"]["TEMPERATURE"]: hotel_object.get_temperature()})
+                                     constants["HOTEL_DETAILS"]["HOTEL_IMAGE"]: hotel_object.retrieve_image_url()})
 
     def get_hotels_number(self):
         """returns the amount of hotels that are available"""
