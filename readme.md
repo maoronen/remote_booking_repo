@@ -6,7 +6,7 @@ The program operates on any OS and uses python 3.8.3
 * Creating a virtual environment by running:
     pip install -r requirements.txt
 * Running Booking_scraper_main_code.py file:
-    for details and more specific instruction, please see Usage paragraph below.
+    for details and more specific instructions, please see the Usage paragraph below.
       
      
 ## Usage
@@ -14,12 +14,13 @@ The program operates on any OS and uses python 3.8.3
 The user chooses the destination, period of time and even can specify more search parameters to 
 hers or his convenience. 
 The scripts accepts several arguments from the user for proper usage:
-    Mandatory (positional) arguments
+    %%%python main-file.py parameter_1 parameter_2...
+    Mandatory (positional) arguments:
     1. Database name - The script will create a database in this name. if a database 
     with this name already exists, the script will continue to run and only a CSV file will be created 
     2. Destination - Where would like to travel? 
     3. Check-in - starting date of your travel **(yyyy-mm-dd)**
-    4. Check-out - ending date of your travel (yyyy-mm-dd)
+    4. Check-out - ending date of your travel **(yyyy-mm-dd)**  
     Optional arguments:
     5. Number of adults - You can specify how many adults take part in the travel.  
     E.g: --adults 2 (2 adults participate in the travel)
@@ -68,12 +69,12 @@ The scripts accepts several arguments from the user for proper usage:
  3. argparse_scraping.py - a script containing the function that receives arguments from the user into argparse module.
  4. scrape_requested_url.py - a script that outputs the final url for scraping according to user input. 
  5. mysql_db_scraper - a script containing a function that creates the database and empty tables.
- 6. conf.json - configuration file arranged as a json dictionary with constants used in the repository's files
+ 6. conf.json - a configuration file arranged as a json dictionary with constants used in the repository's files
  7. logging_file - a tracking file that follows the smooth and errorless progress of the scraping but also notifies errors and problems.
- 8. test_Booking_scraper - a pytest test file for the main code.
+ 8. test_Booking_scraper - a script that tests the main code. Please do not run is as a pytest file.
  9. test_get_urls - a pytest test file for validating the functions that are in charge of retrieve all the necessary urls.
  10. test_retrieve_func - a pytest test for validating the functions in charge of scraping various data from Booking.comm
- 11. requirements.txt - list of all necessary packages to install for proper usage.
+ 11. requirements.txt - the list of all necessary packages to install for proper usage.
  12. Booking_ERD - Entity relationship diagram the describes the database tables and their relationship to one another. 
  
 ## Disclaimer

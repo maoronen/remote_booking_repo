@@ -33,11 +33,21 @@ def create_db(host, user, password, db_name):
         log_f.logger.error(f"Failed using database {db_name}: {format(e)}")
 
     try:
+        cur.execute("""CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL PRIMARY KEY,
+                         location VARCHAR(255));""")
+        log_f.logger.info("locations table created successfully.")
+
+    except Exception as e:
+        log_f.logger.error('Failed creating locations table')
+
+    try:
         cur.execute("""CREATE TABLE IF NOT EXISTS hotels (id INT NOT NULL PRIMARY KEY,
                         name VARCHAR(255),
+                        location_id INT,
                         rating FLOAT,
                         reviews INT,
-                        price_ILS FLOAT);""")
+                        price_ILS FLOAT,
+                        FOREIGN KEY (location_id) REFERENCES locations (id));""")
         log_f.logger.info("hotels table created successfully.")
     except Exception as e:
         log_f.logger.error('Failed creating hotels table')
@@ -53,14 +63,6 @@ def create_db(host, user, password, db_name):
     except Exception as e:
         log_f.logger.error('Failed creating facilities table')
 
-    try:
-        cur.execute("""CREATE TABLE IF NOT EXISTS locations (hotel_id INT NOT NULL PRIMARY KEY,
-                        location VARCHAR(255),
-                        FOREIGN KEY (hotel_id) REFERENCES hotels (id));""")
-        log_f.logger.info("locations table created successfully.")
-
-    except Exception as e:
-        log_f.logger.error('Failed creating locations table')
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS hotel_image (hotel_id INT NOT NULL PRIMARY KEY,

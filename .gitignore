@@ -10,3 +10,4 @@ gen
 
 *.csv
 *.log
+/training_to_delete.py
