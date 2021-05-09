@@ -8,7 +8,7 @@ url = "https://www.booking.com"
 
 
 def url_for_parsing(destination, checkin, checkout, adults, children, rooms):
-    """"""
+    """The function receive the configuration parameters and modified the booking url accordingly """
     # Initialize webdriver and put the path where download the driver
     driver = webdriver.Chrome(ChromeDriverManager().install())
 
