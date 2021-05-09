@@ -38,6 +38,11 @@
     "WRONG_URL_TEST": "https://www.bookin.com",
     "BOOKING_COM": "https://www.booking.com",
     "TESTED_URL": "https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1FCAEoggI46AdIM1gEaGqIAQGYAQm4ARfIAQzYAQHoAQH4AQuIAgGoAgO4AozJ7YIGwAIB0gIkZmE2ZDY1YWYtM2Y4YS00NzgyLThkZjEtNGI3M2UxZTBkMjlk2AIG4AIB&sid=f1627dae7fde2c7c3c438501f56b0d76&sb=1&src=searchresults&src_elem=sb&error_url=https%3A%2F%2Fwww.booking.com%2Fsearchresults.en-gb.html%3Flabel%3Dgen173nr-1FCAEoggI46AdIM1gEaGqIAQGYAQm4ARfIAQzYAQHoAQH4AQuIAgGoAgO4AozJ7YIGwAIB0gIkZmE2ZDY1YWYtM2Y4YS00NzgyLThkZjEtNGI3M2UxZTBkMjlk2AIG4AIB%3Bsid%3Df1627dae7fde2c7c3c438501f56b0d76%3Btmpl%3Dsearchresults%3Bcheckin_month%3D12%3Bcheckin_monthday%3D12%3Bcheckin_year%3D2021%3Bcheckout_month%3D1%3Bcheckout_monthday%3D2%3Bcheckout_year%3D2022%3Bclass_interval%3D1%3Bdtdisc%3D0%3Bfrom_sf%3D1%3Bgroup_adults%3D2%3Bgroup_children%3D2%3Binac%3D0%3Bindex_postcard%3D0%3Blabel_click%3Dundef%3Bno_rooms%3D1%3Boffset%3D0%3Bpostcard%3D0%3Broom1%3DA%252CA%252C12%252C12%3Bsb_price_type%3Dtotal%3Bshw_aparth%3D1%3Bslp_r_match%3D0%3Bsrc%3Dindex%3Bsrc_elem%3Dsb%3Bsrpvid%3D4ebd8a5f2c910110%3Bss%3Dmadrid%3Bss_all%3D0%3Bssb%3Dempty%3Bsshis%3D0%3Btop_ufis%3D1%26%3B&ss=Haifa%2C+North+District+Israel%2C+Israel&is_ski_area=&ssne=Adolfo+Suarez+Madrid-Barajas+Airport&ssne_untouched=Adolfo+Suarez+Madrid-Barajas+Airport&city=900038539&checkin_year=2021&checkin_month=12&checkin_monthday=12&checkout_year=2022&checkout_month=1&checkout_monthday=2&group_adults=2&group_children=2&age=12&age=12&no_rooms=1&from_sf=1&ss_raw=haifa&ac_position=0&ac_langcode=en&ac_click_type=b&dest_id=-780112&dest_type=city&place_id_lat=32.81912&place_id_lon=34.99839&search_pageview_id=4ebd8a5f2c910110&search_selected=true&search_pageview_id=4ebd8a5f2c910110&ac_suggestion_list_length=5&ac_suggestion_theme_list_length=0"
+  },
+  "SQL": {
+    "HOST": "localhost",
+    "USER": "root",
+    "PASSWORD": "root"
   }
 }
 
