@@ -109,7 +109,7 @@ class HotelBlock:
             return None
 
     def get_coordinates(self):
-        """returns coordinates of the hotel location"""
+        """returns a tuple with the latitude and longitude of the hotel location"""
         try:
             coor = self.hotel_html_item.select(constants["SCRAPER"]["COORDINATES"])[0]
             coor = str(coor).split("data-coords=")[1].split()[0]
@@ -123,7 +123,7 @@ class HotelBlock:
 
 
     def get_timezone(self):
-        """returns the timezone of the hotel"""
+        """returns a string of the time zone area"""
         try:
             my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
             time_zone = my_dict['data'][0]['timezone']
@@ -134,7 +134,7 @@ class HotelBlock:
 
 
     def get_temperature(self):
-        "returns the current temperature at the hotel surrounding "
+        """returns the temperature of the current measurement"""
         try:
             my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
             temperature = my_dict['data'][0]['temp']

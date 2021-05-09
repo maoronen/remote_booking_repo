@@ -63,6 +63,8 @@ def last_page_number(page_url):
     return int(last_page_num[-1].text)
 
 def API_url(latitude, longitude):
+    """ The function receive latitude and longitude of the hotel as floats and retrieve a modified url for the API
+        website (weatherbit)"""
     try:
         API_url = f"https://api.weatherbit.io/v2.0/current?lat={latitude}&lon={longitude}&key=cff96ab9574948a39c318e9b6c3831ef&include=minutely"
         headers = {
