@@ -14,7 +14,6 @@ The program operates on any OS and uses python 3.8.3
 The user chooses the destination, period of time and even can specify more search parameters to 
 hers or his convenience. 
 The scripts accepts several arguments from the user for proper usage:
-    %%%python main-file.py parameter_1 parameter_2...
     Mandatory (positional) arguments:
     1. Database name - The script will create a database in this name. if a database 
     with this name already exists, the script will continue to run and only a CSV file will be created 
@@ -38,13 +37,16 @@ The scripts accepts several arguments from the user for proper usage:
     9. MySQL user - username for MySQL. The default is "root".  
     E.g: if you would like to change username, please insert: --user "root_root" 
     10. MySQL password - password for MySQL. The default is "root".  
-    E.g: if you would like to change password, please insert:--password "1234".
+    E.g: if you would like to change password, please insert:--password "1234". If you do not have a password please pass an empty string as ''
     An example for input: zanzibar_db "zanzibar" 2021-05-14 2021-05-18 --children 2 --password 1234
     This will search for hotels in zanzibar that are available between 14th to 18th of May 2021 for 2 adults (default)
     and 2 children. The connection to MySQL will use default values with "1234" as password and 
     the database that will be created will be named "zanzibar_db".
     Please pay attention that when inserting destination, use quotes("") so places with spaces in
-    the name will be interpreted as one. E.g: "Tel Aviv"
+    the name will be interpreted as one. E.g: "Tel Aviv"  
+    An example of proper usage of parameters: python Booking_scraper_main_code.py zanzibar_db
+      zanzibar 2021-10-04 2021-10-08 --children 2 --user username --password 1111
+
       
 * The data is stored in two ways:
  1. A csv file and contain the hotel name, its rating, price,

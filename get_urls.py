@@ -63,13 +63,17 @@ def last_page_number(page_url):
     return int(last_page_num[-1].text)
 
 def API_url(latitude, longitude):
-    API_url = f"https://api.weatherbit.io/v2.0/current?lat={latitude}&lon={longitude}&key=ccfc524cb238411c9e49897be51ead2e&include=minutely"
-    headers = {
-        'x-rapidapi-key': "b0e0e2263cmsha50e96d375ad81dp145af4jsn7c1765ced274",
-        'x-rapidapi-host': "weatherbit-v1-mashape.p.rapidapi.com"
-    }
+    try:
+        API_url = f"https://api.weatherbit.io/v2.0/current?lat={latitude}&lon={longitude}&key=cff96ab9574948a39c318e9b6c3831ef&include=minutely"
+        headers = {
+            'x-rapidapi-key': "b0e0e2263cmsha50e96d375ad81dp145af4jsn7c1765ced274",
+            'x-rapidapi-host': "weatherbit-v1-mashape.p.rapidapi.com"
+        }
 
-    response = requests.request("GET", API_url, headers=headers)
-    return response.json()
+        response = requests.request("GET", API_url, headers=headers)
+        return response.json()
+    except Exception:
+        log_f.logger.warning("could not extract URL for API")
+        return None
 
 

@@ -109,22 +109,40 @@ class HotelBlock:
             return None
 
     def get_coordinates(self):
-        coor = self.hotel_html_item.select(constants["SCRAPER"]["COORDINATES"])[0]
-        coor = str(coor).split("data-coords=")[1].split()[0]
-        coor1 = coor.split(",")
-        longitude = float(coor1[0][1:])
-        latitude = float(coor1[1][:-1])
-        return (latitude, longitude)
+        """returns coordinates of the hotel location"""
+        try:
+            coor = self.hotel_html_item.select(constants["SCRAPER"]["COORDINATES"])[0]
+            coor = str(coor).split("data-coords=")[1].split()[0]
+            coor1 = coor.split(",")
+            longitude = float(coor1[0][1:])
+            latitude = float(coor1[1][:-1])
+            return (latitude, longitude)
+        except Exception:
+            log_f.logger.info("could not extract hotel's coordinates")
+            return None
+
 
     def get_timezone(self):
-        my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
-        time_zone = my_dict['data'][0]['timezone']
-        return time_zone
+        """returns the timezone of the hotel"""
+        try:
+            my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
+            time_zone = my_dict['data'][0]['timezone']
+            return time_zone
+        except Exception:
+            log_f.logger.info("could not extract the timezone")
+            return None
+
 
     def get_temperature(self):
-        my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
-        temperature = my_dict['data'][0]['temp']
-        return temperature
+        "returns the current temperature at the hotel surrounding "
+        try:
+            my_dict = get_urls.API_url(self.get_coordinates()[0], self.get_coordinates()[1])
+            temperature = my_dict['data'][0]['temp']
+            return temperature
+        except Exception:
+            log_f.logger.info("could not extract the current temperature")
+            return None
+
 
 
 class HotelsManager:
