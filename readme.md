@@ -37,7 +37,7 @@ The scripts accepts several arguments from the user for proper usage:
     9. MySQL user - username for MySQL. The default is "root".  
     E.g: if you would like to change username, please insert: --user "root_root" 
     10. MySQL password - password for MySQL. The default is "root".  
-    E.g: if you would like to change password, please insert:--password "1234". If you do not have a password please pass an empty string as ''.  
+    E.g: if you would like to change password, please insert:--password "1234". If you do not have a password please pass an empty string as ''
     An example for input: zanzibar_db "zanzibar" 2021-05-14 2021-05-18 --children 2 --password 1234
     This will search for hotels in zanzibar that are available between 14th to 18th of May 2021 for 2 adults (default)
     and 2 children. The connection to MySQL will use default values with "1234" as password and 
