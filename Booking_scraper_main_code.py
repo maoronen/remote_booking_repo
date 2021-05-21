@@ -181,9 +181,9 @@ class HotelsManager:
                     hotel_object = HotelBlock(item)
                     try:
                         mydb = mysql.connector.connect(
-                            host=args.host,
-                            user=args.user,
-                            password=args.password
+                            host='0.0.0.0',
+                            user='newuser',
+                            password='4817'
                         )
                     except Error as e:
                         log_f.logger.critical("Error while connecting to MySQL", e)
@@ -270,15 +270,17 @@ class HotelsManager:
 
 def main():
     args = arg_src.args_parse()
+    print('##########', args.host)
     mysql_db_scraper.create_db(args.host, args.user, args.password, args.db_name)
     manager = HotelsManager(sru.requested_url())
-    print(f'The most expensive hotel is {manager.most_expensive()[constants["NUMBERS"]["INDEX_HOTEL_TUPLE"]]}, '
-          f'its price is {manager.most_expensive()[constants["NUMBERS"]["INDEX_PRICE_TUPLE"]]} NIS')
+    #print(f'The most expensive hotel is {manager.most_expensive()[constants["NUMBERS"]["INDEX_HOTEL_TUPLE"]]}, '
+          #f'its price is {manager.most_expensive()[constants["NUMBERS"]["INDEX_PRICE_TUPLE"]]} NIS')
     print('**************')
     for hotel in manager.get_hotels_names():
         print(hotel)
     print('**************')
     print(f'The numbers of hotels that are available in your destination is {manager.get_hotels_number()}')
+    print('##########', args.host)
 
 
 if __name__ == '__main__':

@@ -8,9 +8,9 @@ import logging_file as log_f
 def create_db(host, user, password, db_name):
     try:
         mydb = mysql.connector.connect(
-          host=host,
-          user=user,
-          password=password)
+          host='0.0.0.0',
+          user='newuser',
+          password='4817')
         log_f.logger.info("Connected to MySQL")
 
     except Error as e:
