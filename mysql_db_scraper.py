@@ -34,7 +34,7 @@ def create_db(host, user, password, db_name):
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL PRIMARY KEY,
-                         location VARCHAR(255));""")
+                         location VARCHAR(255) CHARACTER SET utf8);""")
         log_f.logger.info("locations table created successfully.")
 
     except Exception as e:
@@ -42,12 +42,12 @@ def create_db(host, user, password, db_name):
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS hotels (id INT NOT NULL PRIMARY KEY,
-                        name VARCHAR(255),
+                        name VARCHAR(255) CHARACTER SET utf8,
                         location_id INT,
                         rating FLOAT,
                         reviews INT,
-                        price_ILS FLOAT,
-                        timezone VARCHAR(255),
+                        price_USD FLOAT,
+                        timezone VARCHAR(255) CHARACTER SET utf8,
                         current_temperature FLOAT,
                         FOREIGN KEY (location_id) REFERENCES locations (id));""")
         log_f.logger.info("hotels table created successfully.")
@@ -56,9 +56,9 @@ def create_db(host, user, password, db_name):
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS facilities (hotel_id INT NOT NULL PRIMARY KEY,
-                        room_type VARCHAR(255),
-                        bed_type VARCHAR(255),
-                        meals VARCHAR(255),
+                        room_type VARCHAR(255) CHARACTER SET utf8,
+                        bed_type VARCHAR(255) CHARACTER SET utf8,
+                        meals VARCHAR(255) CHARACTER SET utf8,
                         FOREIGN KEY (hotel_id) REFERENCES hotels (id));""")
         log_f.logger.info("facilities table created successfully.")
 
@@ -68,7 +68,7 @@ def create_db(host, user, password, db_name):
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS hotel_image (hotel_id INT NOT NULL PRIMARY KEY,
-                          image_url VARCHAR(255),
+                          image_url VARCHAR(255) CHARACTER SET utf8,
                           FOREIGN KEY (hotel_id) REFERENCES hotels (id));""")
         log_f.logger.info("hotel_image table created successfully.")
 

@@ -10,6 +10,7 @@ import mysql
 import pandas as pd
 import json
 import argparse_scraping as arg_src
+import pdb
 
 # importing the constant variables from conf.json
 with open('conf.json') as config_file:
@@ -76,7 +77,8 @@ class HotelBlock:
     def retrieve_price(self):
         """returns the price as a int of the hotel for the entire requested period"""
         try:
-            price = self.hotel_html_item.select(constants["SCRAPER"]["PRICE"])[constants["NUMBERS"]["TEXT"]].get_text().split('\n')[constants["NUMBERS"]["NO_SPACE"]].split()[
+            #pdb.set_trace()
+            price = self.hotel_html_item.select(constants["SCRAPER"]["PRICE"])[constants["NUMBERS"]["TEXT"]].get_text().split('\n')[constants["NUMBERS"]["NO_SPACE"]].split('$')[
                 constants["NUMBERS"]["DIGIT"]]
             price = int(price.replace(",", ""))
         except Exception:
@@ -203,13 +205,13 @@ class HotelsManager:
                             "INSERT INTO locations (id, location) VALUES (%s, %s)",
                             [location_PK, hotel_object.retrieve_hotel_location()])
                         mydb.commit()
-                        log_f.logger.info("Record inserted successfully into locations table")
+                        log_f.logger.info("Record {} inserted successfully into locations table".format(hotel_object.retrieve_hotel_location()))
                     except Exception as e:
-                        log_f.logger.warning("Failed to insert record into locations table {}".format(e))
+                        log_f.logger.warning("Failed to insert record into locations table {}: {}".format(hotel_object.retrieve_hotel_location(), e))
 
                     try:
                         cur.execute(
-                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_ILS, timezone, current_temperature) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_USD, timezone, current_temperature) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                             [id_counter, hotel_object.retrieve_hotel_name(), location_PK, hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price(), hotel_object.get_timezone(), hotel_object.get_temperature()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
