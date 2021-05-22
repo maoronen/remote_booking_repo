@@ -202,8 +202,8 @@ class HotelsManager:
                         cur = mydb.cursor()
                         cur.execute(f"USE {db_name}")
                         cur.execute(
-                            "INSERT INTO locations (id, location) VALUES (%s, %s)",
-                            [location_PK, hotel_object.retrieve_hotel_location()])
+                            "INSERT INTO locations (id, location, timezone, current_temperature) VALUES (%s, %s, %s, %s)",
+                            [location_PK, hotel_object.retrieve_hotel_location(), hotel_object.get_timezone(), hotel_object.get_temperature()])
                         mydb.commit()
                         log_f.logger.info("Record {} inserted successfully into locations table".format(hotel_object.retrieve_hotel_location()))
                     except Exception as e:
@@ -211,8 +211,8 @@ class HotelsManager:
 
                     try:
                         cur.execute(
-                            "INSERT INTO hotels (id, name, location_id, rating, reviews, price_USD, timezone, current_temperature) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                            [id_counter, hotel_object.retrieve_hotel_name(), location_PK, hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price(), hotel_object.get_timezone(), hotel_object.get_temperature()])
+                            "INSERT INTO hotels (id, name, location_id, rating, rating_title ,reviews, price_USD) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                            [id_counter, hotel_object.retrieve_hotel_name(), location_PK, hotel_object.retrieve_hotel_rating(), hotel_object.retrieve_score_title(),hotel_object.retrieve_reviews_num(), hotel_object.retrieve_price()])
                         mydb.commit()
                         log_f.logger.info("Record inserted successfully into hotels table")
                     except Exception as e:

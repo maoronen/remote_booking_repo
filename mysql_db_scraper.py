@@ -34,7 +34,9 @@ def create_db(host, user, password, db_name):
 
     try:
         cur.execute("""CREATE TABLE IF NOT EXISTS locations (id INT NOT NULL PRIMARY KEY,
-                         location VARCHAR(255) CHARACTER SET utf8);""")
+                         location VARCHAR(255) CHARACTER SET utf8,
+                         timezone VARCHAR(255) CHARACTER SET utf8,
+                        current_temperature FLOAT);""")
         log_f.logger.info("locations table created successfully.")
 
     except Exception as e:
@@ -45,10 +47,9 @@ def create_db(host, user, password, db_name):
                         name VARCHAR(255) CHARACTER SET utf8,
                         location_id INT,
                         rating FLOAT,
+                        rating_title VARCHAR(255) CHARACTER SET utf8,
                         reviews INT,
                         price_USD FLOAT,
-                        timezone VARCHAR(255) CHARACTER SET utf8,
-                        current_temperature FLOAT,
                         FOREIGN KEY (location_id) REFERENCES locations (id));""")
         log_f.logger.info("hotels table created successfully.")
     except Exception as e:
